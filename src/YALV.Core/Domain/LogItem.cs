@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using YALV.Core.Plugins;
+using YALV.Core.Plugins.Formatting;
 
 namespace YALV.Core.Domain
 {
@@ -28,6 +32,16 @@ namespace YALV.Core.Domain
         /// LevelIndex
         /// </summary>
         public LevelIndex LevelIndex { get; set; }
+
+        public object DetailMessage
+        {
+            get
+            {
+                IReadOnlyList<ILogMessageDetailCreatorPlugin> formatterPlugins = PluginManager.Instance.GetPlugins<ILogMessageDetailCreatorPlugin>();
+                ILogMessageDetailCreatorPlugin formatter = formatterPlugins.FirstOrDefault(x => x.IsSuitingForDetailMessage(this));
+                return formatter.GenerateDetailMessage(this);
+            }
+        }
 
         /// <summary>
         /// Level Property
