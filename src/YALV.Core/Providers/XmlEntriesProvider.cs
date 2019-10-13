@@ -139,6 +139,12 @@ namespace YALV.Core.Providers
                         accept = true;
                     break;
 
+                case 6:
+                    if (String.Equals(entry.Level, "TRACE",
+                        StringComparison.InvariantCultureIgnoreCase))
+                        accept = true;
+                    break;
+
                 default:
                     accept = true;
                     break;

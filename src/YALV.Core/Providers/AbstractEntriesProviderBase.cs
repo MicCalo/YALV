@@ -53,6 +53,10 @@ namespace YALV.Core.Providers
                                 AddLevelClause(command, "FATAL");
                                 break;
 
+                            case 6:
+                                AddLevelClause(command, "TRACE");
+                                break;
+
                             default:
                                 break;
                         }

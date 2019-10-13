@@ -8,6 +8,7 @@ namespace YALV.Common.Converters
     public class LevelToSolidColorConverter
         : IValueConverter
     {
+        private SolidColorBrush traceColor = Application.Current.FindResource("TraceLevelColor") as SolidColorBrush;
         private SolidColorBrush debugColor = Application.Current.FindResource("DebugLevelColor") as SolidColorBrush;
         private SolidColorBrush infoColor = Application.Current.FindResource("InfoLevelColor") as SolidColorBrush;
         private SolidColorBrush warnColor = Application.Current.FindResource("WarnLevelColor") as SolidColorBrush;
@@ -32,6 +33,8 @@ namespace YALV.Common.Converters
                     return errorColor ?? Brushes.Transparent;
                 case 5:
                     return fatalColor ?? Brushes.Transparent;
+                case 6:
+                    return traceColor ?? Brushes.Transparent;
                 default:
                     return Brushes.Transparent;
             }

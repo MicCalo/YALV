@@ -64,6 +64,10 @@
 
     <!-- LEVEL COLORS -->
     <SolidColorBrush
+        x:Key="TraceLevelColor"
+        Color="Lavender"
+        PresentationOptions:Freeze="True" />
+    <SolidColorBrush
         x:Key="DebugLevelColor"
         Color="LightBlue"
         PresentationOptions:Freeze="True" />
@@ -459,6 +463,15 @@
         TargetType="{x:Type DataGridRow}">
         <Style.Triggers>
 
+            <!-- Trace -->
+            <DataTrigger
+                Binding="{Binding Path=LevelIndex, Mode=OneWay}"
+                Value="6">
+                <Setter
+                    Property="Background"
+                    Value="{StaticResource TraceLevelColor}" />
+            </DataTrigger>
+            
             <!-- Debug -->
             <DataTrigger
                 Binding="{Binding Path=LevelIndex, Mode=OneWay}"
@@ -557,6 +570,23 @@
                 <TextBlock
                     Style="{StaticResource tbRbStyle}"
                     Text="ALL" />
+            </RadioButton>
+        </DockPanel>
+    </Border>
+
+    <Border
+        Style="{StaticResource borderRbStyle}"
+        x:Key="RadioButtonTrace"
+        Background="{StaticResource TraceLevelColor}">
+        <DockPanel
+            LastChildFill="True">
+            <RadioButton
+                DockPanel.Dock="Left"
+                GroupName="Selection"
+                IsChecked="{Binding Path=SelectTrace}">
+                <TextBlock
+                    Style="{StaticResource tbRbStyle}"
+                    Text="TRACE" />
             </RadioButton>
         </DockPanel>
     </Border>

@@ -81,7 +81,10 @@ namespace YALV.Core.Domain
                     LevelIndex =  LevelIndex.ERROR;
                     break;
                 case "FATAL":
-                    LevelIndex =  LevelIndex.FATAL;
+                    LevelIndex = LevelIndex.FATAL;
+                    break;
+                case "TRACE":
+                    LevelIndex = LevelIndex.TRACE;
                     break;
                 default:
                     LevelIndex =  LevelIndex.NONE;
@@ -99,6 +102,7 @@ namespace YALV.Core.Domain
         INFO = 2,
         WARN = 3,
         ERROR = 4,
-        FATAL = 5
+        FATAL = 5,
+        TRACE = 6
     }
 }
