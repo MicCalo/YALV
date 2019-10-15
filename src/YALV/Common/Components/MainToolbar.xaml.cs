@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YALV.Core.Plugins;
+using YALV.Core.Plugins.Commands;
 
 namespace YALV.Common
 {
@@ -31,6 +33,23 @@ namespace YALV.Common
                     FrameworkElement overflowGrid = (FrameworkElement)toolBar.Template.FindName("OverflowGrid", toolBar);
                     if (overflowGrid != null)
                         overflowGrid.Visibility = Visibility.Collapsed;
+
+
+                    IEnumerable< ICommandPlugin> commandPlugins = PluginManager.Instance.GetPlugins<ICommandPlugin>().Where(x=>x.Location.HasFlag(CommandPluginLocation.MainToolBar));
+
+                    foreach(ICommandPlugin cPlug in commandPlugins)
+                    {
+                        Button btn = new Button();
+                        btn.Command = cPlug.Command;
+                        btn.ToolTip = cPlug.Command;
+
+                        StackPanel stackPanel = new StackPanel();
+                        stackPanel.Children.Add(new Image() { Source = cPlug.ImageSource });
+                        stackPanel.Children.Add(new TextBlock() { Text = cPlug.Text });
+                        btn.Content = stackPanel;
+
+                        AddChild(btn);
+                    }
                 }
             };
         }

@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV", "YALV\YALV.csproj", "{D9109556-5B27-4FF2-AB53-837DF91A5466}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.Samples", "YALV.Samples\YALV.Samples.csproj", "{5276151E-F717-4893-9A09-C9DD3CE65F83}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.Core", "YALV.Core\YALV.Core.csproj", "{D8EFA045-5482-4BBA-A1BF-28667D5F4635}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmnisPluginsForYalv", "OmnisPluginsForYalv\OmnisPluginsForYalv.csproj", "{80AA479F-8905-419B-9C66-9AC4BA20F79D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,8 +41,19 @@ Global
 		{D8EFA045-5482-4BBA-A1BF-28667D5F4635}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8EFA045-5482-4BBA-A1BF-28667D5F4635}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D8EFA045-5482-4BBA-A1BF-28667D5F4635}.Release|x86.ActiveCfg = Release|Any CPU
+		{80AA479F-8905-419B-9C66-9AC4BA20F79D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80AA479F-8905-419B-9C66-9AC4BA20F79D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80AA479F-8905-419B-9C66-9AC4BA20F79D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{80AA479F-8905-419B-9C66-9AC4BA20F79D}.Debug|x86.Build.0 = Debug|Any CPU
+		{80AA479F-8905-419B-9C66-9AC4BA20F79D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80AA479F-8905-419B-9C66-9AC4BA20F79D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80AA479F-8905-419B-9C66-9AC4BA20F79D}.Release|x86.ActiveCfg = Release|Any CPU
+		{80AA479F-8905-419B-9C66-9AC4BA20F79D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E7606637-0AB2-47AF-9694-A786091D4AEA}
 	EndGlobalSection
 EndGlobal
