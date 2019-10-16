@@ -27,14 +27,14 @@ namespace OmnisPluginsForYalv
         private void Execute(object parameter)
         {
             IDataAccess dataAccess = _context.DataAccess;
-            dataAccess.Items.Clear();
             if (dataAccess.IsFileSelectionEnabled)
             {
                 IReadOnlyList<FileItem> files = dataAccess.FileList.Where(x => x.Checked).ToList();
                 string msg = string.Join(", ", files.Select(x => x.FileName).ToArray());
                 if (MessageBox.Show(string.Format("Do you want to reset the following files: {0}", msg), "Warning", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    foreach(FileItem f in files)
+                    dataAccess.Items.Clear();
+                    foreach (FileItem f in files)
                     {
                         ResetFile(f);
                     }
@@ -44,6 +44,7 @@ namespace OmnisPluginsForYalv
             {
                 if (MessageBox.Show(string.Format("Do you want to reset file {0}", dataAccess.SelectedFile.FileName), "Warning", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
+                    dataAccess.Items.Clear();
                     ResetFile(dataAccess.SelectedFile);
                 }
             }
@@ -51,10 +52,7 @@ namespace OmnisPluginsForYalv
 
         private void ResetFile(FileItem item)
         {
-            FileInfo file = new FileInfo(Path.Combine(item.Path, item.FileName));
-            using (Stream s = file.OpenWrite())
-            {
-            }
+            File.WriteAllText(item.Path, String.Empty);
         }
 
         public CommandPluginLocation Location
