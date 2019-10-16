@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using YALV.Core.Model;
 
 namespace YALV.Core.Plugins
 {
     public class PluginManager
     {
-        private static PluginManager instance;
+        private static PluginManager _instance;
         private static readonly Type iYalvPluginType = typeof(IYalvPlugin);
+        private IPluginContext _pluginContext = new PluginContext();
+        private readonly List<IYalvPlugin> _plugins = new List<IYalvPlugin>();
 
-        private readonly List<IYalvPlugin> plugins = new List<IYalvPlugin>();
-
-        private PluginManager(IMainModel mainModel)
+        private PluginManager()
         {
             Dictionary<Type, object> potentialParams = new Dictionary<Type, object>();
-            potentialParams.Add(mainModel.GetType(), mainModel);
+            potentialParams.Add(typeof(IPluginContext), _pluginContext);
 
             SearchAssembly(this.GetType().Assembly, potentialParams);
 
@@ -28,8 +27,10 @@ namespace YALV.Core.Plugins
                 SearchAssembly(assembly, potentialParams);
             }
 
-            plugins.Sort((a, b) => (a.Priority - b.Priority));
+            _plugins.Sort((a, b) => (a.Priority - b.Priority));
         }
+
+        public IPluginContext Context { get { return _pluginContext; } }
 
         private void SearchAssembly(Assembly assembly, Dictionary<Type, object> potentialParams)
         {
@@ -39,7 +40,7 @@ namespace YALV.Core.Plugins
                 {
                     if (t.IsClass && !t.IsAbstract && iYalvPluginType.IsAssignableFrom(t))
                     {
-                        plugins.Add(Create(t, potentialParams));
+                        _plugins.Add(Create(t, potentialParams));
                     }
                 }
             }
@@ -101,15 +102,15 @@ namespace YALV.Core.Plugins
 
         public IReadOnlyList<T> GetPlugins<T>() where T: IYalvPlugin
         {
-            return plugins.OfType<T>().ToList();
+            return _plugins.OfType<T>().ToList();
         }
 
         public static PluginManager Instance { get
             {
-                if (instance == null){
-                    instance = new PluginManager(MainModelAccess.Instance.MainModel);
+                if (_instance == null){
+                    _instance = new PluginManager();
                 }
-                return instance;
+                return _instance;
             }
         }
     }

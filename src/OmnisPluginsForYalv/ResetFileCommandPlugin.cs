@@ -2,22 +2,59 @@
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using YALV.Core.Domain;
 using YALV.Core.Model;
+using YALV.Core.Plugins;
 using YALV.Core.Plugins.Commands;
+using System.Linq;
+using System.Collections.Generic;
+using System.Windows;
+using System.IO;
 
 namespace OmnisPluginsForYalv
 {
     public class ResetFileCommandPlugin : ICommandPlugin
     {
-        private readonly ICommand _command = new SimpleActionCommand(Execute);
+        private readonly ICommand _command;
+        private readonly  IPluginContext _context;
 
-        public ResetFileCommandPlugin(IMainModel model)
+        public ResetFileCommandPlugin(IPluginContext context)
         {
-
+            _command = new SimpleActionCommand(Execute);
+            _context = context;
         }
-        private static void Execute(object parameter)
-        {
 
+        private void Execute(object parameter)
+        {
+            IDataAccess dataAccess = _context.DataAccess;
+            dataAccess.Items.Clear();
+            if (dataAccess.IsFileSelectionEnabled)
+            {
+                IReadOnlyList<FileItem> files = dataAccess.FileList.Where(x => x.Checked).ToList();
+                string msg = string.Join(", ", files.Select(x => x.FileName).ToArray());
+                if (MessageBox.Show(string.Format("Do you want to reset the following files: {0}", msg), "Warning", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    foreach(FileItem f in files)
+                    {
+                        ResetFile(f);
+                    }
+                }
+            }
+            else
+            {
+                if (MessageBox.Show(string.Format("Do you want to reset file {0}", dataAccess.SelectedFile.FileName), "Warning", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    ResetFile(dataAccess.SelectedFile);
+                }
+            }
+        }
+
+        private void ResetFile(FileItem item)
+        {
+            FileInfo file = new FileInfo(Path.Combine(item.Path, item.FileName));
+            using (Stream s = file.OpenWrite())
+            {
+            }
         }
 
         public CommandPluginLocation Location

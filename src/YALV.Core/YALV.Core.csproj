@@ -59,14 +59,13 @@
     <Compile Include="Domain\LogItem.cs" />
     <Compile Include="Domain\PathItem.cs" />
     <Compile Include="Exceptions\NotValidValueException.cs" />
-    <Compile Include="Model\IMainModel.cs" />
-    <Compile Include="Model\MainModel.cs" />
-    <Compile Include="Model\MainModelAccess.cs" />
+    <Compile Include="Model\IDataAccess.cs" />
     <Compile Include="Plugins\Commands\SimpleActionCommand.cs" />
     <Compile Include="Plugins\Formatting\FormattingDetailLogMessageCreator.cs" />
     <Compile Include="Plugins\Formatting\ILogMessageDetailCreatorPlugin.cs" />
     <Compile Include="Plugins\Formatting\KeywordLogMessageDetailCreator.cs" />
     <Compile Include="Plugins\Commands\ICommandPlugin.cs" />
+    <Compile Include="Plugins\IPluginContext.cs" />
     <Compile Include="Plugins\IYalvPlugin.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

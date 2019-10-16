@@ -14,20 +14,18 @@ using YALV.Common.Interfaces;
 using YALV.Core;
 using YALV.Core.Domain;
 using YALV.Core.Model;
+using YALV.Core.Plugins;
 using YALV.Properties;
 
 namespace YALV.ViewModel
 {
     public class MainWindowVM
-        : BindableObject
+        : BindableObject, IDataAccess
     {
-        private IMainModel _mainModel;
-
         public MainWindowVM(IWinSimple win)
         {
             _callingWin = win;
-
-            _mainModel = MainModelAccess.Instance.MainModel;
+            PluginManager.Instance.Context.DataAccess = this;
 
             CommandExit = new CommandRelay(commandExitExecute, p => true);
             CommandOpenFile = new CommandRelay(commandOpenFileExecute, commandOpenFileCanExecute);
@@ -44,6 +42,7 @@ namespace YALV.ViewModel
             CommandAbout = new CommandRelay(commandAboutExecute, p => true);
 
             FileList = new ObservableCollection<FileItem>();
+            Items = new ObservableCollection<LogItem>();
             loadFolderList();
 
             SelectedFile = null;
@@ -532,14 +531,15 @@ namespace YALV.ViewModel
                 _isFileSelectionEnabled = value;
                 RaisePropertyChanged(PROP_IsFileSelectionEnabled);
 
-                Items.Clear();
                 if (_isFileSelectionEnabled)
                 {
+                    Items.Clear();
                     if (FileList.Count > 0 && SelectedFile != null)
                         SelectedFile.Checked = true;
                 }
                 else
                 {
+                    Items.Clear();
                     foreach (FileItem item in FileList)
                         item.Checked = false;
                     SelectedFile = null;
@@ -657,9 +657,14 @@ namespace YALV.ViewModel
         /// </summary>
         public ObservableCollection<LogItem> Items
         {
-            get { return _mainModel.Items; }
+            get { return _items; }
+            set
+            {
+                _items = value;
+                RaisePropertyChanged(PROP_Items);
+            }
         }
-
+        private ObservableCollection<LogItem> _items;
         public static string PROP_Items = "Items";
 
         /// <summary>
@@ -851,8 +856,8 @@ namespace YALV.ViewModel
             }
         }
         private bool _selectTrace;
-        public static string PROP_SelectTrace = "SelectTrace";        
-        
+        public static string PROP_SelectTrace = "SelectTrace";
+
         /// <summary>
         /// SelectDebug Property
         /// </summary>
@@ -1160,7 +1165,23 @@ namespace YALV.ViewModel
 
         private void removeItems(string path)
         {
-            _mainModel.RemoveItemsWithPath(path);
+            //Less performance
+            //for (int i = Items.Count - 1; i >= 0; i--)
+            //{
+            //    if (Items[i].Path.Equals(path, StringComparison.OrdinalIgnoreCase))
+            //        Items.RemoveAt(i);
+            //}
+
+            //Best performance
+            var selectedItems = from it in Items
+                                where (!it.Path.Equals(path, StringComparison.OrdinalIgnoreCase))
+                                select it;
+            Items = new ObservableCollection<LogItem>(selectedItems);
+
+            int itemId = 1;
+            foreach (LogItem item in Items)
+                item.Id = itemId++;
+
             updateCounters();
         }
 
@@ -1346,7 +1367,8 @@ namespace YALV.ViewModel
                         list = mergeList;
                     }
 
-                    _mainModel.Items = new ObservableCollection<LogItem>(list);
+                    Items.Clear();
+                    Items = new ObservableCollection<LogItem>(list);
 
                     updateCounters();
 
@@ -1358,8 +1380,6 @@ namespace YALV.ViewModel
 
                         SelectedLogItem = lastItem != null ? lastItem : Items[Items.Count - 1];
                     }
-
-                    RaisePropertyChanged(PROP_Items);
                 }
             }
             IsLoading = false;
@@ -1544,11 +1564,11 @@ namespace YALV.ViewModel
             }
         }
         private int _itemsTraceFilterCount;
-        public static string PROP_ItemsTraceFilterCount = "ItemsTraceFilterCount"; 
-        
+        public static string PROP_ItemsTraceFilterCount = "ItemsTraceFilterCount";
+
         /// <summary>
-                                                                                   /// ItemsDebugFilterCount Property
-                                                                                   /// </summary>
+        /// ItemsDebugFilterCount Property
+        /// </summary>
         public int ItemsDebugFilterCount
         {
             get { return _itemsDebugFilterCount; }
