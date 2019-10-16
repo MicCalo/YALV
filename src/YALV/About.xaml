@@ -209,7 +209,7 @@
                             Margin="0,8,0,0"
                             FontSize="12"
                             FontWeight="DemiBold"
-                            Text="Copyright © Luca Petrini 2013" />
+                            Text="Copyright © Luca Petrini 2013, Michel Calonder 2019" />
 
                         <!-- ABOUT -->
                         <TextBlock

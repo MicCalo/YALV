@@ -394,7 +394,7 @@
     <value>YALV! - Info</value>
   </data>
   <data name="About_Header_Text" xml:space="preserve">
-    <value>YALV! - Yet Another Log4Net Viewer</value>
+    <value>YALV! - Yet Another Log4Net Viewer - jetzt mit Plugins</value>
   </data>
   <data name="About_AboutGroupBox_Header" xml:space="preserve">
     <value>Programminfo</value>

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("YALV.Core")]
-[assembly: AssemblyCopyright("Copyright ©  Luca Petrini 2013")]
+[assembly: AssemblyCopyright("Copyright ©  Luca Petrini 2013, Michel Calonder 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

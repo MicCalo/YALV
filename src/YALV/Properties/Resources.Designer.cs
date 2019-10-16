@@ -100,7 +100,7 @@ namespace YALV.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to YALV! - Yet Another Log4Net Viewer.
+        ///   Looks up a localized string similar to YALV! - Yet Another Log4Net Viewer now ready for Plugins.
         /// </summary>
         public static string About_Header_Text {
             get {
