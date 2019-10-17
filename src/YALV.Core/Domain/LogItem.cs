@@ -9,6 +9,8 @@ namespace YALV.Core.Domain
     [Serializable]
     public class LogItem
     {
+        private bool isMarked;
+        public bool IsMarked { get { return isMarked; } set { isMarked = value; } }
         public int Id { get; set; }
         public string Path { get; set; }
         public DateTime TimeStamp { get; set; }

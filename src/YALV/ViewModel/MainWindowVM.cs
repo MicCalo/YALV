@@ -1400,6 +1400,7 @@ namespace YALV.ViewModel
             {
                 IList<ColumnItem> dgColumns = new List<ColumnItem>()
                 {
+                    new ColumnItem("IsMarked", 20, 20, CellAlignment.CENTER,string.Empty){Header = "Mark"},
                     new ColumnItem("Id", 37, null, CellAlignment.CENTER,string.Empty){Header = Resources.MainWindowVM_InitDataGrid_IdColumn_Header},
                     new ColumnItem("TimeStamp", 120, null, CellAlignment.CENTER, GlobalHelper.DisplayDateTimeFormat){Header = Resources.MainWindowVM_InitDataGrid_TimeStampColumn_Header},
                     new ColumnItem("Level", null, 50, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_LevelColumn_Header},

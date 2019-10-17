@@ -45,20 +45,36 @@ namespace YALV.Common
             {
                 foreach (ColumnItem item in columns)
                 {
-                    DataGridTextColumn col = new DataGridTextColumn();
-                    col.Header = item.Header;
+                    DataGridColumn col;
+                    if (item.Field.Equals("IsMarked"))
+                    {
+                        DataGridCheckBoxColumn cbCol = new DataGridCheckBoxColumn();
+                        cbCol.IsReadOnly = false;
+                        col = cbCol;
+                        cbCol.Header = item.Header;
+                        Binding bind = new Binding(item.Field) { Mode = BindingMode.TwoWay };
+                       // bind.ConverterCulture = System.Globalization.CultureInfo.GetCultureInfo(Properties.Resources.CultureName);
+                       // if (!String.IsNullOrWhiteSpace(item.StringFormat))
+                       //     bind.StringFormat = item.StringFormat;
+                        cbCol.Binding = bind;
+                    }
+                    else
+                    {
+                        DataGridTextColumn textCol = new DataGridTextColumn();
+                        col = textCol;
+                        textCol.Header = item.Header;
+                        Binding bind = new Binding(item.Field) { Mode = BindingMode.OneWay };
+                        bind.ConverterCulture = System.Globalization.CultureInfo.GetCultureInfo(Properties.Resources.CultureName);
+                        if (!String.IsNullOrWhiteSpace(item.StringFormat))
+                            bind.StringFormat = item.StringFormat;
+                        textCol.Binding = bind;
+                    }
                     if (item.Alignment == CellAlignment.CENTER && _centerCellStyle != null)
                         col.CellStyle = _centerCellStyle;
                     if (item.MinWidth != null)
                         col.MinWidth = item.MinWidth.Value;
                     if (item.Width != null)
                         col.Width = item.Width.Value;
-
-                    Binding bind = new Binding(item.Field) { Mode = BindingMode.OneWay };
-                    bind.ConverterCulture = System.Globalization.CultureInfo.GetCultureInfo(Properties.Resources.CultureName);
-                    if (!String.IsNullOrWhiteSpace(item.StringFormat))
-                        bind.StringFormat = item.StringFormat;
-                    col.Binding = bind;
 
                     //Add column to datagrid
                     _dg.Columns.Add(col);
@@ -73,23 +89,35 @@ namespace YALV.Common
                             Converter = _adjConv,
                             ConverterParameter = "-2"
                         };
+                        if (item.Field.Equals("IsMarked"))
+                        {
+                            CheckBox cb = new CheckBox();
+                            cb.IsThreeState = true;
+                            cb.IsChecked = null;
+                            cb.SetBinding(CheckBox.WidthProperty, widthBind);
+                            cb.Name = "IsMarkedFilterName";
+                            RegisterControl<CheckBox>(_txtSearchPanel, cb.Name, cb);
+                            _txtSearchPanel.Children.Add(cb);
+                        }
+                        else
+                        {
+                            TextBox txt = new TextBox();
+                            Style txtStyle = Application.Current.FindResource("RoundWatermarkTextBox") as Style;
+                            if (txtStyle != null)
+                                txt.Style = txtStyle;
+                            txt.Name = getTextBoxName(item.Field);
+                            txt.ToolTip = String.Format(Resources.FilteredGridManager_BuildDataGrid_FilterTextBox_Tooltip, item.Header);
+                            txt.Tag = txt.ToolTip.ToString().ToLower();
+                            txt.Text = string.Empty;
+                            txt.AcceptsReturn = false;
+                            txt.SetBinding(TextBox.WidthProperty, widthBind);
+                            _filterPropertyList.Add(item.Field);
+                            if (_keyUpEvent != null)
+                                txt.KeyUp += _keyUpEvent;
 
-                        TextBox txt = new TextBox();
-                        Style txtStyle = Application.Current.FindResource("RoundWatermarkTextBox") as Style;
-                        if (txtStyle != null)
-                            txt.Style = txtStyle;
-                        txt.Name = getTextBoxName(item.Field);
-                        txt.ToolTip = String.Format(Resources.FilteredGridManager_BuildDataGrid_FilterTextBox_Tooltip, item.Header);
-                        txt.Tag = txt.ToolTip.ToString().ToLower();
-                        txt.Text = string.Empty;
-                        txt.AcceptsReturn = false;
-                        txt.SetBinding(TextBox.WidthProperty, widthBind);
-                        _filterPropertyList.Add(item.Field);
-                        if (_keyUpEvent != null)
-                            txt.KeyUp += _keyUpEvent;
-
-                        RegisterControl<TextBox>(_txtSearchPanel, txt.Name, txt);
-                        _txtSearchPanel.Children.Add(txt);
+                            RegisterControl<TextBox>(_txtSearchPanel, txt.Name, txt);
+                            _txtSearchPanel.Children.Add(txt);
+                        }
                     }
                 }
             }

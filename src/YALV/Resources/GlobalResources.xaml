@@ -232,7 +232,7 @@
             Value="20" />
         <Setter
             Property="IsReadOnly"
-            Value="True" />
+            Value="False" />
         <Setter
             Property="HeadersVisibility"
             Value="Column" />
