@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.Samples", "YALV.Sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.Core", "YALV.Core\YALV.Core.csproj", "{D8EFA045-5482-4BBA-A1BF-28667D5F4635}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmnisPluginsForYalv", "OmnisPluginsForYalv\OmnisPluginsForYalv.csproj", "{80AA479F-8905-419B-9C66-9AC4BA20F79D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.DefaultPlugins", "YALV.DefaultPlugins\YALV.DefaultPlugins.csproj", "{80AA479F-8905-419B-9C66-9AC4BA20F79D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
