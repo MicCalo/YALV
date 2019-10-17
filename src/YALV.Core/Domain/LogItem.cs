@@ -6,6 +6,28 @@ using YALV.Core.Plugins.Formatting;
 
 namespace YALV.Core.Domain
 {
+    public enum LogItemProperty
+    {
+        IsMarked,
+        Id,
+        Path,
+        TimeStamp,
+        Logger,
+        Thread,
+        Message,
+        MachineName,
+        UserName,
+        HostName,
+        App,
+        Throwable,
+        Class,
+        Method,
+        File,
+        Line,
+        Uncategorized,
+        LevelIndex
+    }
+
     [Serializable]
     public class LogItem
     {
@@ -60,6 +82,33 @@ namespace YALV.Core.Domain
                 }
             }
         }
+
+        public object Get(LogItemProperty prop)
+        {
+            switch (prop)
+            {
+                case LogItemProperty.IsMarked: return IsMarked;
+                case LogItemProperty.Id: return Id;
+                case LogItemProperty.Path: return Path;
+                case LogItemProperty.TimeStamp: return TimeStamp;
+                case LogItemProperty.Logger: return Logger;
+                case LogItemProperty.Thread: return Thread;
+                case LogItemProperty.Message: return Message;
+                case LogItemProperty.MachineName: return MachineName;
+                case LogItemProperty.UserName: return UserName;
+                case LogItemProperty.HostName: return HostName;
+                case LogItemProperty.App: return App;
+                case LogItemProperty.Throwable: return Throwable;
+                case LogItemProperty.Class: return Class;
+                case LogItemProperty.Method: return Method;
+                case LogItemProperty.File: return File;
+                case LogItemProperty.Line: return Line;
+                case LogItemProperty.Uncategorized: return Uncategorized;
+                case LogItemProperty.LevelIndex: return LevelIndex;
+                default: throw new NotImplementedException("Property " + prop);
+            }
+        }
+    
 
         #region Privates
 
