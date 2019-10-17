@@ -55,7 +55,7 @@ namespace YALV.Core.Plugins
                 return (IYalvPlugin)Activator.CreateInstance(type, parameters);
             }
 
-            throw new InvalidOperationException(string.Format("No suiting counstructor found for type {0}",  type.Name));
+            throw new InvalidOperationException(string.Format("No suiting constructor found for type {0}",  type.Name));
         }
 
         private object[] GetParams(ConstructorInfo[] ctors, Dictionary<Type, object> potentialParams)

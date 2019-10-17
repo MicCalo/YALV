@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YALV.Core</RootNamespace>
     <AssemblyName>YALV.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -63,7 +63,6 @@
     <Compile Include="Plugins\Commands\SimpleActionCommand.cs" />
     <Compile Include="Plugins\Formatting\FormattingDetailLogMessageCreator.cs" />
     <Compile Include="Plugins\Formatting\ILogMessageDetailCreatorPlugin.cs" />
-    <Compile Include="Plugins\Formatting\KeywordLogMessageDetailCreator.cs" />
     <Compile Include="Plugins\Commands\ICommandPlugin.cs" />
     <Compile Include="Plugins\IPluginContext.cs" />
     <Compile Include="Plugins\IYalvPlugin.cs" />

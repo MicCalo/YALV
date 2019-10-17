@@ -1,8 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using YALV.Core.Domain;
+using YALV.Core.Plugins.Formatting;
 
-namespace YALV.Core.Plugins.Formatting
+namespace YALV.DefaultPlugins
 {
     public class KeywordLogMessageDetailCreator : FormattingLogMessageDetailCreator
     {

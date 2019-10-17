@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.IO;
 
-namespace OmnisPluginsForYalv
+namespace YALV.DefaultPlugins
 {
     public class ResetFileCommandPlugin : ICommandPlugin
     {
