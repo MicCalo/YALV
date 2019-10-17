@@ -14,11 +14,11 @@ namespace YALV.Common
     public class FilteredGridManagerBase
         : DisposableObject
     {
-        public FilteredGridManagerBase(DataGrid dg, Panel txtSearchPanel, KeyEventHandler keyUpEvent)
+        public FilteredGridManagerBase(DataGrid dg, Panel txtSearchPanel, Action filterChanged)
         {
             _dg = dg;
             _txtSearchPanel = txtSearchPanel;
-            _keyUpEvent = keyUpEvent;
+            _filterChanged = filterChanged;
             _filterPropertyList = new List<string>();
             _txtCache = new Hashtable();
             IsFilteringEnabled = true;
@@ -45,9 +45,10 @@ namespace YALV.Common
         protected IList<string> _filterPropertyList;
         protected DataGrid _dg;
         protected Panel _txtSearchPanel;
-        protected KeyEventHandler _keyUpEvent;
+        protected Action _filterChanged;
         protected CollectionViewSource _cvs;
         protected Hashtable _txtCache;
+        protected CheckBox _markCheckBox;
 
         #endregion
 
@@ -134,7 +135,21 @@ namespace YALV.Common
 
                 if (_filterPropertyList != null && _txtSearchPanel != null)
                 {
-                    //Check each filter property
+                    if (_markCheckBox == null)
+                    {
+                        _markCheckBox = _txtSearchPanel.FindName("IsMarkedFilterName") as CheckBox;
+                    }
+
+                    if (_markCheckBox.IsChecked.HasValue)
+                    {
+                        LogItem logItem = (LogItem)item;
+                        if (logItem.IsMarked != _markCheckBox.IsChecked.Value)
+                        {
+                            return false;
+                        }
+                    }
+
+                    //Check each string filter property
                     foreach (string prop in _filterPropertyList)
                     {
                         TextBox txt = null;

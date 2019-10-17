@@ -15,8 +15,8 @@ namespace YALV.Common
     public class FilteredGridManager
         : FilteredGridManagerBase
     {
-        public FilteredGridManager(DataGrid dg, Panel txtSearchPanel, KeyEventHandler keyUpEvent)
-            : base(dg, txtSearchPanel, keyUpEvent)
+        public FilteredGridManager(DataGrid dg, Panel txtSearchPanel, Action filterChanged)
+            : base(dg, txtSearchPanel, filterChanged)
         {
             _centerCellStyle = Application.Current.FindResource("CenterDataGridCellStyle") as Style;
             _adjConv = new AdjustValueConverter();
@@ -96,6 +96,7 @@ namespace YALV.Common
                             cb.IsChecked = null;
                             cb.SetBinding(CheckBox.WidthProperty, widthBind);
                             cb.Name = "IsMarkedFilterName";
+                            cb.Click += Cb_Checked;
                             RegisterControl<CheckBox>(_txtSearchPanel, cb.Name, cb);
                             _txtSearchPanel.Children.Add(cb);
                         }
@@ -112,8 +113,7 @@ namespace YALV.Common
                             txt.AcceptsReturn = false;
                             txt.SetBinding(TextBox.WidthProperty, widthBind);
                             _filterPropertyList.Add(item.Field);
-                            if (_keyUpEvent != null)
-                                txt.KeyUp += _keyUpEvent;
+                            txt.KeyUp += HandleKeyUpEvent;
 
                             RegisterControl<TextBox>(_txtSearchPanel, txt.Name, txt);
                             _txtSearchPanel.Children.Add(txt);
@@ -125,9 +125,26 @@ namespace YALV.Common
             _dg.ColumnReordered += OnColumnReordered;
         }
 
+
         #endregion
 
         #region Private methods
+
+        private void Cb_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_filterChanged != null)
+            {
+                _filterChanged();
+            }
+        }
+
+        private void HandleKeyUpEvent(object sender, KeyEventArgs args)
+        {
+            if (_filterChanged != null)
+            {
+                _filterChanged();
+            }
+        }
 
         private void OnColumnReordered(object sender, DataGridColumnEventArgs dataGridColumnEventArgs)
         {
