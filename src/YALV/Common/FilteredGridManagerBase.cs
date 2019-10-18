@@ -19,16 +19,12 @@ namespace YALV.Common
             _dg = dg;
             _txtSearchPanel = txtSearchPanel;
             _filterChanged = filterChanged;
-            _filterPropertyList = new List<string>();
-            _txtCache = new Hashtable();
             IsFilteringEnabled = true;
         }
 
         protected override void OnDispose()
         {
             ClearCache();
-            if (_filterPropertyList != null)
-                _filterPropertyList.Clear();
             if (_dg != null)
                 _dg.Columns.Clear();
             if (_cvs != null)
@@ -42,13 +38,11 @@ namespace YALV.Common
 
         #region Private Properties
 
-        protected IList<string> _filterPropertyList;
         protected DataGrid _dg;
         protected Panel _txtSearchPanel;
         protected Action _filterChanged;
         protected CollectionViewSource _cvs;
-        protected Hashtable _txtCache;
-        protected CheckBox _markCheckBox;
+        //protected CheckBox _markCheckBox;
 
         #endregion
 

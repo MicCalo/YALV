@@ -714,7 +714,7 @@
             Value="{StaticResource DefaultFontSize}" />
         <Setter
             Property="AcceptsReturn"
-            Value="True" />
+            Value="False" />
         <Setter
             Property="Padding"
             Value="5,3,3,3" />

@@ -8,6 +8,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using YALV.Common.Converters;
 using YALV.Core.Domain;
+using YALV.Core.Plugins;
+using YALV.Filters;
 using YALV.Properties;
 
 namespace YALV.Common
@@ -23,6 +25,9 @@ namespace YALV.Common
         }
 
         #region Private Properties
+
+        private static readonly Lazy<IFilterManager> _filterManager = new Lazy<IFilterManager>(() => PluginManager.Instance.GetPlugins<IFilterManager>().First());
+        private readonly Lazy<IFilter> _filter = new Lazy<IFilter>(() => _filterManager.Value.CreateFilter());
 
         private Style _centerCellStyle;
         private AdjustValueConverter _adjConv;

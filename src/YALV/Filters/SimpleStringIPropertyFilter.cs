@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using YALV.Core.Domain;
 
-namespace YALV.Common
+namespace YALV.Filters
 {
-    public interface IPropertyFilter
-    {
-        bool Matches(LogItem item, LogItemProperty property);
-    }
-
     public class SimpleStringIPropertyFilter : IPropertyFilter
     {
         private readonly string filterValue;
@@ -31,12 +22,5 @@ namespace YALV.Common
             return given.ToString().Contains(filterValue);
         }
 
-    }
-
-    public class FilterInfo
-    {
-        private Dictionary<LogItemProperty, IPropertyFilter> filters = new Dictionary<LogItemProperty, IPropertyFilter>();
-
-        public void Add(LogItemProperty prop, IPropertyFilter f)
     }
 }

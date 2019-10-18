@@ -134,7 +134,7 @@
     <Compile Include="Common\Converters\TimeDeltaDoubleToLocalizedStringConverter.cs" />
     <Compile Include="Common\FilteredGridManager.cs" />
     <Compile Include="Common\FilteredGridManagerBase.cs" />
-    <Compile Include="Common\FilterInfo.cs" />
+    <Compile Include="Filters\DefaultFilter.cs" />
     <Compile Include="Common\GlobalHelper.cs" />
     <Compile Include="Common\Interfaces\ICommandAncestor.cs" />
     <Compile Include="Common\Interfaces\IWinSimple.cs" />
@@ -143,6 +143,11 @@
     <Compile Include="Common\Components\MainToolbar.xaml.cs">
       <DependentUpon>MainToolbar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Filters\IFilter.cs" />
+    <Compile Include="Filters\IFilterManager.cs" />
+    <Compile Include="Filters\IPropertyFilter.cs" />
+    <Compile Include="Filters\SimpleBoolPropertyFilter.cs" />
+    <Compile Include="Filters\SimpleStringIPropertyFilter.cs" />
     <Compile Include="Properties\Resources.fr.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
