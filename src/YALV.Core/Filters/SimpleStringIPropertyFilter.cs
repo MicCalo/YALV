@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using YALV.Core.Domain;
 
-namespace YALV.Filters
+namespace YALV.Core.Filters
 {
     public class SimpleStringIPropertyFilter : IPropertyFilter
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using YALV.Core.Domain;
 
-namespace YALV.Filters
+namespace YALV.Core.Filters
 {
     public class DefaultFilter : IFilter
     {

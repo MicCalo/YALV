@@ -39,7 +39,7 @@ namespace YALV
 
             //Initialize and assign ViewModel
             MainWindowVM _vm = new MainWindowVM(this);
-            _vm.GridManager = new FilteredGridManager(dgItems, txtSearchPanel, () => _vm.RefreshView());
+            _vm.GridManager = new FilteredGridManager(dgItems, txtSearchPanel, (prop, ctrl) => _vm.RefreshView());
          //      (delegate (object sender, KeyEventArgs e)
          //  {
          //      if (e.OriginalSource is TextBox)

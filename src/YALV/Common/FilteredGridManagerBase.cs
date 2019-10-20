@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
-using YALV.Core;
 using YALV.Core.Domain;
+using YALV.Core.Filters;
+using YALV.Core.Plugins;
 
 namespace YALV.Common
 {
     public class FilteredGridManagerBase
         : DisposableObject
     {
-        public FilteredGridManagerBase(DataGrid dg, Panel txtSearchPanel, Action filterChanged)
+        public FilteredGridManagerBase(DataGrid dg, Panel txtSearchPanel, Action<LogItemProperty, Control> filterChanged)
         {
             _dg = dg;
             _txtSearchPanel = txtSearchPanel;
@@ -24,7 +22,6 @@ namespace YALV.Common
 
         protected override void OnDispose()
         {
-            ClearCache();
             if (_dg != null)
                 _dg.Columns.Clear();
             if (_cvs != null)
@@ -40,9 +37,35 @@ namespace YALV.Common
 
         protected DataGrid _dg;
         protected Panel _txtSearchPanel;
-        protected Action _filterChanged;
+        protected Action<LogItemProperty, Control> _filterChanged;
         protected CollectionViewSource _cvs;
-        //protected CheckBox _markCheckBox;
+
+        private IFilterManager _filterManager;
+        protected IFilterManager FilterManager
+        {
+            get
+            {
+                if (_filterManager == null)
+                {
+                    _filterManager = PluginManager.Instance.GetPlugins<IFilterManager>().First();
+                }
+
+                return _filterManager;
+            }
+        }
+
+        private IFilter _filter;
+        protected IFilter Filter
+        {
+            get
+            {
+                if (_filter == null)
+                {
+                    _filter = _filterManager.CreateFilter();
+                }
+                return _filter;
+            }
+        }
 
         #endregion
 
@@ -79,27 +102,31 @@ namespace YALV.Common
 
         public void ResetSearchTextBox()
         {
-            if (_filterPropertyList != null && _txtSearchPanel != null)
+            if (_txtSearchPanel != null)
             {
+                foreach(Control c in _txtSearchPanel.Children)
+                {
+                    if (c is CheckBox)
+                    {
+                        ((CheckBox)c).IsChecked = null;
+                    }else
+                    {
+                        ((TextBox)c).Text = string.Empty;
+                    }
+                }/*
                 //Clear all textbox text
                 foreach (string prop in _filterPropertyList)
                 {
                     TextBox txt = _txtSearchPanel.FindName(getTextBoxName(prop)) as TextBox;
                     if (txt != null & !string.IsNullOrEmpty(txt.Text))
                         txt.Text = string.Empty;
-                }
+                }*/
             }
         }
 
-        public void ClearCache()
-        {
-            if (_txtCache != null)
-                _txtCache.Clear();
-        }
+        public Func<LogItem, bool> OnBeforeCheckFilter;
 
-        public Func<object, bool> OnBeforeCheckFilter;
-
-        public Func<object, bool, bool> OnAfterCheckFilter;
+        public Func<LogItem, bool, bool> OnAfterCheckFilter;
 
         public bool IsFilteringEnabled { get; set; }
 
@@ -112,94 +139,112 @@ namespace YALV.Common
             return string.Format("txtFilter{0}", prop).Replace(".", "");
         }
 
-        protected bool itemCheckFilter(object item)
+        protected bool itemCheckFilter(object obj)
         {
-            bool res = true;
-
             if (!IsFilteringEnabled)
-                return res;
-
-            try
             {
-                if (OnBeforeCheckFilter != null)
-                    res = OnBeforeCheckFilter(item);
+                return true;
+            }
+            LogItem item = (LogItem)obj;
 
-                if (!res)
-                    return res;
-
-                if (_filterPropertyList != null && _txtSearchPanel != null)
+            if (OnBeforeCheckFilter != null)
+            {
+                if (!OnBeforeCheckFilter(item))
                 {
-                    if (_markCheckBox == null)
+                    return false;
+                }
+            }
+            
+            if (!Filter.Matches(item))
+            {
+                return false;
+            }
+
+            if (OnBeforeCheckFilter != null)
+            {
+                if (!OnBeforeCheckFilter(item))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+
+            /*
+            if (_filterPropertyList != null && _txtSearchPanel != null)
+            {
+                if (_markCheckBox == null)
+                {
+                    _markCheckBox = _txtSearchPanel.FindName("IsMarkedFilterName") as CheckBox;
+                }
+
+                if (_markCheckBox.IsChecked.HasValue)
+                {
+                    LogItem logItem = (LogItem)item;
+                    if (logItem.IsMarked != _markCheckBox.IsChecked.Value)
                     {
-                        _markCheckBox = _txtSearchPanel.FindName("IsMarkedFilterName") as CheckBox;
+                        return false;
+                    }
+                }
+
+                //Check each string filter property
+                foreach (string prop in _filterPropertyList)
+                {
+                    TextBox txt = null;
+                    if (_txtCache.ContainsKey(prop))
+                        txt = _txtCache[prop] as TextBox;
+                    else
+                    {
+                        txt = _txtSearchPanel.FindName(getTextBoxName(prop)) as TextBox;
+                        _txtCache[prop] = txt;
                     }
 
-                    if (_markCheckBox.IsChecked.HasValue)
+                    res = false;
+                    if (txt == null)
+                        res = true;
+                    else
                     {
-                        LogItem logItem = (LogItem)item;
-                        if (logItem.IsMarked != _markCheckBox.IsChecked.Value)
-                        {
-                            return false;
-                        }
-                    }
-
-                    //Check each string filter property
-                    foreach (string prop in _filterPropertyList)
-                    {
-                        TextBox txt = null;
-                        if (_txtCache.ContainsKey(prop))
-                            txt = _txtCache[prop] as TextBox;
-                        else
-                        {
-                            txt = _txtSearchPanel.FindName(getTextBoxName(prop)) as TextBox;
-                            _txtCache[prop] = txt;
-                        }
-
-                        res = false;
-                        if (txt == null)
+                        if (string.IsNullOrEmpty(txt.Text))
                             res = true;
                         else
                         {
-                            if (string.IsNullOrEmpty(txt.Text))
-                                res = true;
-                            else
+                            try
                             {
-                                try
+                                //Get property value
+                                object val = getItemValue(item, prop);
+                                if (val != null)
                                 {
-                                    //Get property value
-                                    object val = getItemValue(item, prop);
-                                    if (val != null)
-                                    {
-                                        string valToCompare = string.Empty;
-                                        if (val is DateTime)
-                                            valToCompare = ((DateTime)val).ToString(GlobalHelper.DisplayDateTimeFormat, System.Globalization.CultureInfo.GetCultureInfo(Properties.Resources.CultureName));
-                                        else
-                                            valToCompare = val.ToString();
+                                    string valToCompare = string.Empty;
+                                    if (val is DateTime)
+                                        valToCompare = ((DateTime)val).ToString(GlobalHelper.DisplayDateTimeFormat, System.Globalization.CultureInfo.GetCultureInfo(Properties.Resources.CultureName));
+                                    else
+                                        valToCompare = val.ToString();
 
-                                        if (valToCompare.ToString().IndexOf(txt.Text, StringComparison.OrdinalIgnoreCase) >= 0)
-                                            res = true;
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine(ex.Message);
-                                    res = true;
+                                    if (valToCompare.ToString().IndexOf(txt.Text, StringComparison.OrdinalIgnoreCase) >= 0)
+                                        res = true;
                                 }
                             }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                                res = true;
+                            }
                         }
-                        if (!res)
-                            return res;
                     }
+                    if (!res)
+                        return res;
                 }
-                res = true;
             }
-            finally
-            {
-                if (OnAfterCheckFilter != null)
-                    res = OnAfterCheckFilter(item, res);
+            res = true;
+        }
+        finally
+        {
+            if (OnAfterCheckFilter != null)
+                res = OnAfterCheckFilter(item, res);
 
-            }
-            return res;
+        }
+        return res;
+        */
         }
 
         protected object getItemValue(object item, string prop)

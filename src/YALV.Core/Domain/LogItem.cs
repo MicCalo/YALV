@@ -25,6 +25,7 @@ namespace YALV.Core.Domain
         File,
         Line,
         Uncategorized,
+        Level,
         LevelIndex
     }
 

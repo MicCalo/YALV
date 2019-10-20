@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using YALV.Core.Domain;
 using YALV.Core.Plugins;
 
-namespace YALV.Filters
+namespace YALV.Core.Filters
 {
     public interface IFilterManager :IYalvPlugin
     {

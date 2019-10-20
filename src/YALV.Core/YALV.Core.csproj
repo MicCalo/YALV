@@ -59,6 +59,12 @@
     <Compile Include="Domain\LogItem.cs" />
     <Compile Include="Domain\PathItem.cs" />
     <Compile Include="Exceptions\NotValidValueException.cs" />
+    <Compile Include="Filters\DefaultFilter.cs" />
+    <Compile Include="Filters\IFilter.cs" />
+    <Compile Include="Filters\IFilterManager.cs" />
+    <Compile Include="Filters\IPropertyFilter.cs" />
+    <Compile Include="Filters\SimpleBoolPropertyFilter.cs" />
+    <Compile Include="Filters\SimpleStringIPropertyFilter.cs" />
     <Compile Include="Model\IDataAccess.cs" />
     <Compile Include="Plugins\Commands\SimpleActionCommand.cs" />
     <Compile Include="Plugins\Formatting\FormattingDetailLogMessageCreator.cs" />

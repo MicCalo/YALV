@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 using YALV.Common.Converters;
 using YALV.Core.Domain;
-using YALV.Core.Plugins;
-using YALV.Filters;
 using YALV.Properties;
 
 namespace YALV.Common
@@ -17,7 +13,7 @@ namespace YALV.Common
     public class FilteredGridManager
         : FilteredGridManagerBase
     {
-        public FilteredGridManager(DataGrid dg, Panel txtSearchPanel, Action filterChanged)
+        public FilteredGridManager(DataGrid dg, Panel txtSearchPanel, Action<LogItemProperty, Control> filterChanged)
             : base(dg, txtSearchPanel, filterChanged)
         {
             _centerCellStyle = Application.Current.FindResource("CenterDataGridCellStyle") as Style;
@@ -25,9 +21,6 @@ namespace YALV.Common
         }
 
         #region Private Properties
-
-        private static readonly Lazy<IFilterManager> _filterManager = new Lazy<IFilterManager>(() => PluginManager.Instance.GetPlugins<IFilterManager>().First());
-        private readonly Lazy<IFilter> _filter = new Lazy<IFilter>(() => _filterManager.Value.CreateFilter());
 
         private Style _centerCellStyle;
         private AdjustValueConverter _adjConv;
@@ -40,11 +33,6 @@ namespace YALV.Common
         {
             if (_dg == null)
                 return;
-
-            if (_filterPropertyList == null)
-                _filterPropertyList = new List<string>();
-            else
-                _filterPropertyList.Clear();
 
             if (columns != null)
             {
@@ -94,35 +82,14 @@ namespace YALV.Common
                             Converter = _adjConv,
                             ConverterParameter = "-2"
                         };
-                        if (item.Field.Equals("IsMarked"))
-                        {
-                            CheckBox cb = new CheckBox();
-                            cb.IsThreeState = true;
-                            cb.IsChecked = null;
-                            cb.SetBinding(CheckBox.WidthProperty, widthBind);
-                            cb.Name = "IsMarkedFilterName";
-                            cb.Click += Cb_Checked;
-                            RegisterControl<CheckBox>(_txtSearchPanel, cb.Name, cb);
-                            _txtSearchPanel.Children.Add(cb);
-                        }
-                        else
-                        {
-                            TextBox txt = new TextBox();
-                            Style txtStyle = Application.Current.FindResource("RoundWatermarkTextBox") as Style;
-                            if (txtStyle != null)
-                                txt.Style = txtStyle;
-                            txt.Name = getTextBoxName(item.Field);
-                            txt.ToolTip = String.Format(Resources.FilteredGridManager_BuildDataGrid_FilterTextBox_Tooltip, item.Header);
-                            txt.Tag = txt.ToolTip.ToString().ToLower();
-                            txt.Text = string.Empty;
-                            txt.AcceptsReturn = false;
-                            txt.SetBinding(TextBox.WidthProperty, widthBind);
-                            _filterPropertyList.Add(item.Field);
-                            txt.KeyUp += HandleKeyUpEvent;
 
-                            RegisterControl<TextBox>(_txtSearchPanel, txt.Name, txt);
-                            _txtSearchPanel.Children.Add(txt);
-                        }
+                        LogItemProperty prop = (LogItemProperty)Enum.Parse(typeof(LogItemProperty), item.Field);
+                        Control ctrl = FilterManager.CreateControl(prop, _filterChanged);
+                        ctrl.Name = "FilterControl" + prop;
+                        ctrl.SetBinding(TextBox.WidthProperty, widthBind);
+                        ctrl.ToolTip = String.Format(Resources.FilteredGridManager_BuildDataGrid_FilterTextBox_Tooltip, item.Header);
+                        RegisterControl(_txtSearchPanel, ctrl.Name, ctrl);
+                        _txtSearchPanel.Children.Add(ctrl);
                     }
                 }
             }
@@ -134,22 +101,6 @@ namespace YALV.Common
         #endregion
 
         #region Private methods
-
-        private void Cb_Checked(object sender, RoutedEventArgs e)
-        {
-            if (_filterChanged != null)
-            {
-                _filterChanged();
-            }
-        }
-
-        private void HandleKeyUpEvent(object sender, KeyEventArgs args)
-        {
-            if (_filterChanged != null)
-            {
-                _filterChanged();
-            }
-        }
 
         private void OnColumnReordered(object sender, DataGridColumnEventArgs dataGridColumnEventArgs)
         {
@@ -178,9 +129,9 @@ namespace YALV.Common
             _txtSearchPanel.Children.Insert(displayOrder, textBox);
         }
 
-        private void RegisterControl<T>(FrameworkElement element, string controlName, T control)
+        private void RegisterControl(FrameworkElement element, string controlName, Control control)
         {
-            if ((T)element.FindName(controlName) != null)
+            if (element.FindName(controlName) != null)
             {
                 element.UnregisterName(controlName);
             }

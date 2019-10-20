@@ -738,7 +738,7 @@
                             CornerRadius="5" />
                         <Label
                             x:Name="TextPrompt"
-                            Content="{TemplateBinding Tag}"
+                            Content="{TemplateBinding ToolTip}"
                             Padding="5,3,3,3"
                             Focusable="False"
                             FontStyle="Oblique"
