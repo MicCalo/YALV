@@ -15,8 +15,16 @@ namespace YALV.DefaultPlugins
 {
     public class ResetFileCommandPlugin : ICommandPlugin
     {
+        private static IYalvPluginInformation _info = new YalvPluginInformation("Reset/Clear file button", "Adds a toolbutton which clears the selected file(s)", "(c) 2019 Michel Calonder", new System.Version(1, 0, 0));
         private readonly ICommand _command;
         private readonly  IPluginContext _context;
+
+        public bool IsEnabled
+        {
+            get { return true; }
+        }
+
+        public IYalvPluginInformation Information { get { return _info; } }
 
         public ResetFileCommandPlugin(IPluginContext context)
         {

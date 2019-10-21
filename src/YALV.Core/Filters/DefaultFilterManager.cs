@@ -2,15 +2,25 @@
 using System.Windows;
 using System.Windows.Controls;
 using YALV.Core.Domain;
+using YALV.Core.Plugins;
 
 namespace YALV.Core.Filters
 {
     public class DefaultFilterManager : IFilterManager
     {
+        private static IYalvPluginInformation _info = new YalvPluginInformation("Filtering support", "Basic implemention for filtering", "(c) 2019 Michel Calonder", new Version(1, 0, 0));
+
         public virtual int Priority
         {
             get { return int.MaxValue; }
         }
+
+        public bool IsEnabled
+        {
+            get { return true; }
+        }
+
+        public IYalvPluginInformation Information { get { return _info; } }
 
         public IPropertyFilterInfo CreateFilterInfo(LogItemProperty prop, Action<LogItemProperty, Control> changedAction)
         {
