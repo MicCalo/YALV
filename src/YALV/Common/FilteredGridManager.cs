@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using YALV.Common.Converters;
 using YALV.Core.Domain;
+using YALV.Core.Filters;
 using YALV.Properties;
 
 namespace YALV.Common
@@ -46,9 +47,6 @@ namespace YALV.Common
                         col = cbCol;
                         cbCol.Header = item.Header;
                         Binding bind = new Binding(item.Field) { Mode = BindingMode.TwoWay };
-                       // bind.ConverterCulture = System.Globalization.CultureInfo.GetCultureInfo(Properties.Resources.CultureName);
-                       // if (!String.IsNullOrWhiteSpace(item.StringFormat))
-                       //     bind.StringFormat = item.StringFormat;
                         cbCol.Binding = bind;
                     }
                     else
@@ -84,12 +82,15 @@ namespace YALV.Common
                         };
 
                         LogItemProperty prop = (LogItemProperty)Enum.Parse(typeof(LogItemProperty), item.Field);
-                        Control ctrl = FilterManager.CreateControl(prop, _filterChanged);
-                        ctrl.Name = "FilterControl" + prop;
-                        ctrl.SetBinding(TextBox.WidthProperty, widthBind);
-                        ctrl.ToolTip = String.Format(Resources.FilteredGridManager_BuildDataGrid_FilterTextBox_Tooltip, item.Header);
-                        RegisterControl(_txtSearchPanel, ctrl.Name, ctrl);
-                        _txtSearchPanel.Children.Add(ctrl);
+                        IPropertyFilterInfo info = FilterManager.CreateFilterInfo(prop, _filterChanged);
+                        //  Control ctrl = info.Control;
+                        info.Control.SetBinding(TextBox.WidthProperty, widthBind);
+                        info.Control.ToolTip = String.Format(Resources.FilteredGridManager_BuildDataGrid_FilterTextBox_Tooltip, item.Header);
+                        info.Control.Tag = info.Control.ToolTip.ToString().ToLower();
+                        //RegisterControl(_txtSearchPanel, info.Control.Name, info.Control);
+                        _txtSearchPanel.Children.Add(info.Control);
+
+                        Filter.Add(prop, info.Filter);
                     }
                 }
             }

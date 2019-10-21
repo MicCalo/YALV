@@ -60,9 +60,12 @@
     <Compile Include="Domain\PathItem.cs" />
     <Compile Include="Exceptions\NotValidValueException.cs" />
     <Compile Include="Filters\DefaultFilter.cs" />
+    <Compile Include="Filters\DefaultFilterManager.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\IFilterManager.cs" />
     <Compile Include="Filters\IPropertyFilter.cs" />
+    <Compile Include="Filters\IPropertyFilterInfo.cs" />
+    <Compile Include="Filters\PropertyFilterInfo.cs" />
     <Compile Include="Filters\SimpleBoolPropertyFilter.cs" />
     <Compile Include="Filters\SimpleStringIPropertyFilter.cs" />
     <Compile Include="Model\IDataAccess.cs" />

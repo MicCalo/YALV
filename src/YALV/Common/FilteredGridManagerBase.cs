@@ -113,14 +113,7 @@ namespace YALV.Common
                     {
                         ((TextBox)c).Text = string.Empty;
                     }
-                }/*
-                //Clear all textbox text
-                foreach (string prop in _filterPropertyList)
-                {
-                    TextBox txt = _txtSearchPanel.FindName(getTextBoxName(prop)) as TextBox;
-                    if (txt != null & !string.IsNullOrEmpty(txt.Text))
-                        txt.Text = string.Empty;
-                }*/
+                }
             }
         }
 
@@ -169,82 +162,6 @@ namespace YALV.Common
             }
 
             return true;
-
-            /*
-            if (_filterPropertyList != null && _txtSearchPanel != null)
-            {
-                if (_markCheckBox == null)
-                {
-                    _markCheckBox = _txtSearchPanel.FindName("IsMarkedFilterName") as CheckBox;
-                }
-
-                if (_markCheckBox.IsChecked.HasValue)
-                {
-                    LogItem logItem = (LogItem)item;
-                    if (logItem.IsMarked != _markCheckBox.IsChecked.Value)
-                    {
-                        return false;
-                    }
-                }
-
-                //Check each string filter property
-                foreach (string prop in _filterPropertyList)
-                {
-                    TextBox txt = null;
-                    if (_txtCache.ContainsKey(prop))
-                        txt = _txtCache[prop] as TextBox;
-                    else
-                    {
-                        txt = _txtSearchPanel.FindName(getTextBoxName(prop)) as TextBox;
-                        _txtCache[prop] = txt;
-                    }
-
-                    res = false;
-                    if (txt == null)
-                        res = true;
-                    else
-                    {
-                        if (string.IsNullOrEmpty(txt.Text))
-                            res = true;
-                        else
-                        {
-                            try
-                            {
-                                //Get property value
-                                object val = getItemValue(item, prop);
-                                if (val != null)
-                                {
-                                    string valToCompare = string.Empty;
-                                    if (val is DateTime)
-                                        valToCompare = ((DateTime)val).ToString(GlobalHelper.DisplayDateTimeFormat, System.Globalization.CultureInfo.GetCultureInfo(Properties.Resources.CultureName));
-                                    else
-                                        valToCompare = val.ToString();
-
-                                    if (valToCompare.ToString().IndexOf(txt.Text, StringComparison.OrdinalIgnoreCase) >= 0)
-                                        res = true;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.WriteLine(ex.Message);
-                                res = true;
-                            }
-                        }
-                    }
-                    if (!res)
-                        return res;
-                }
-            }
-            res = true;
-        }
-        finally
-        {
-            if (OnAfterCheckFilter != null)
-                res = OnAfterCheckFilter(item, res);
-
-        }
-        return res;
-        */
         }
 
         protected object getItemValue(object item, string prop)

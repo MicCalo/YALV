@@ -105,6 +105,7 @@ namespace YALV.Core.Domain
                 case LogItemProperty.File: return File;
                 case LogItemProperty.Line: return Line;
                 case LogItemProperty.Uncategorized: return Uncategorized;
+                case LogItemProperty.Level: return Level;
                 case LogItemProperty.LevelIndex: return LevelIndex;
                 default: throw new NotImplementedException("Property " + prop);
             }
