@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using System.Windows.Controls;
 using YALV.Core.Domain;
 
 namespace YALV.Core.Filters
 {
     public class SimpleStringIPropertyFilter : IPropertyFilter
     {
-        private readonly string filterValue;
+        private string filterValue;
 
         public SimpleStringIPropertyFilter(string val)
         {
@@ -14,6 +15,10 @@ namespace YALV.Core.Filters
 
         public bool Matches(LogItem item, LogItemProperty property)
         {
+            if (string.IsNullOrEmpty(filterValue))
+            {
+                return true;
+            }
             object given = item.Get(property);
             if (given == null || given.Equals(string.Empty)){
                 return true;
@@ -22,5 +27,13 @@ namespace YALV.Core.Filters
             return given.ToString().Contains(filterValue);
         }
 
+        public void Update(Control source)
+        {
+            TextBox tb = source as TextBox;
+            if (tb != null)
+            {
+                filterValue = tb.Text;
+            }
+        }
     }
 }
