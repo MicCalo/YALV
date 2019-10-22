@@ -73,9 +73,13 @@
     <Compile Include="Filters\SimpleStringIPropertyFilter.cs" />
     <Compile Include="Model\IDataAccess.cs" />
     <Compile Include="Plugins\Commands\SimpleActionCommand.cs" />
+    <Compile Include="Plugins\Formatting\DocumentHelper.cs" />
+    <Compile Include="Plugins\Formatting\FormatFactory.cs" />
+    <Compile Include="Plugins\Formatting\FormattingDetailThrowableCreator.cs" />
     <Compile Include="Plugins\Formatting\FormattingDetailLogMessageCreator.cs" />
     <Compile Include="Plugins\Formatting\ILogMessageDetailCreatorPlugin.cs" />
     <Compile Include="Plugins\Commands\ICommandPlugin.cs" />
+    <Compile Include="Plugins\Formatting\ILogThrowableDetailPlugin.cs" />
     <Compile Include="Plugins\IPluginContext.cs" />
     <Compile Include="Plugins\IYalvPlugin.cs" />
     <Compile Include="Plugins\IYalvPluginInformation.cs" />

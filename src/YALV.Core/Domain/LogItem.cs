@@ -68,6 +68,16 @@ namespace YALV.Core.Domain
             }
         }
 
+        public object ThrowableMessage
+        {
+            get
+            {
+                IReadOnlyList<ILogThrowableDetailPlugin> formatterPlugins = PluginManager.Instance.GetPlugins<ILogThrowableDetailPlugin>();
+                ILogThrowableDetailPlugin formatter = formatterPlugins.FirstOrDefault(x => x.IsSuitingForDetailThrowabe(this));
+                return formatter.GenerateThrowable(this);
+            }
+        }
+
         /// <summary>
         /// Level Property
         /// </summary>

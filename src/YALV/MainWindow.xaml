@@ -1047,13 +1047,11 @@
                         <ScrollViewer
                             HorizontalScrollBarVisibility="Disabled"
                             VerticalScrollBarVisibility="Auto">
-                            <TextBox
+                            <FlowDocumentScrollViewer 
                                 BorderBrush="Silver"
                                 BorderThickness="0,1"
-                                IsReadOnly="True"
-                                Text="{Binding Path=SelectedLogItem.Throwable, Mode=OneWay}"
-                                TextWrapping="Wrap">
-                            </TextBox>
+                                Document="{Binding Path=SelectedLogItem.ThrowableMessage, Mode=OneWay}">
+                            </FlowDocumentScrollViewer>
                         </ScrollViewer>
                     </DockPanel>
                 </Grid>
