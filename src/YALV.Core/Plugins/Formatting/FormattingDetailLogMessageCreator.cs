@@ -7,6 +7,8 @@ namespace YALV.Core.Plugins.Formatting
 {
     public class FormattingLogMessageDetailCreator : ILogMessageDetailCreatorPlugin
     {
+        private static IYalvPluginInformation _info = new YalvPluginInformation("Normal Log Details", "Base and fallback for all log message details", "(c) 2019 Michel Calonder", new System.Version(1, 0, 0));
+        
         protected static Brush background = new SolidColorBrush(Colors.White);
         protected static Thickness padding = new Thickness(1);
 
@@ -16,6 +18,16 @@ namespace YALV.Core.Plugins.Formatting
         }
 
         public virtual int Priority { get { return int.MaxValue; } }
+
+        public virtual bool IsEnabled
+        {
+            get { return true; }
+        }
+
+        public virtual IYalvPluginInformation Information
+        {
+            get { return _info; }
+        }
 
         protected virtual FlowDocument CreateDocument(out Paragraph paragraph)
         {

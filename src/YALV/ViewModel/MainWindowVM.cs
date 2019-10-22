@@ -167,7 +167,7 @@ namespace YALV.ViewModel
             using (System.Windows.Forms.OpenFileDialog dlg = new System.Windows.Forms.OpenFileDialog())
             {
                 bool addFile = parameter != null && parameter.Equals("ADD");
-                dlg.Filter = String.Format("{0} (*.xml)|*.xml|{1} (*.*)|*.*", Properties.Resources.MainWindowVM_commandOpenFileExecute_XmlFilesCaption, Properties.Resources.MainWindowVM_commandOpenFileExecute_AllFilesCaption);
+                dlg.Filter = String.Format("Logfiles (*.log)|*.log|{0} (*.xml)|*.xml|{1} (*.*)|*.*", Properties.Resources.MainWindowVM_commandOpenFileExecute_XmlFilesCaption, Properties.Resources.MainWindowVM_commandOpenFileExecute_AllFilesCaption);
                 dlg.DefaultExt = "xml";
                 dlg.Multiselect = true;
                 dlg.Title = addFile ? Resources.MainWindowVM_commandOpenFileExecute_Add_Log_File : Resources.MainWindowVM_commandOpenFileExecute_Open_Log_File;
@@ -1049,6 +1049,11 @@ namespace YALV.ViewModel
 
                 foreach (string file in files)
                 {
+                    if (!file.EndsWith(".log"))
+                    {
+                        continue;
+                    }
+
                     string fileName = Path.GetFileName(file);
                     FileItem newItem = new FileItem(fileName, file);
                     newItem.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
