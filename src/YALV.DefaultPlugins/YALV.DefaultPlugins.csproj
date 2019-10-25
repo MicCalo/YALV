@@ -60,6 +60,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)\..\YALV\bin\Debug\Plugins" /f /y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)\..\YALV\bin\$(ConfigurationName)\Plugins" /f /y</PostBuildEvent>
   </PropertyGroup>
 </Project>
