@@ -62,8 +62,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)\..\YALV\bin\Debug\Plugins" /f /y
-xcopy "$(TargetDir)Env*.dll" "$(ProjectDir)\..\YALV\bin\Debug\" /f /y
-xcopy "$(TargetDir)stdole.dll" "$(ProjectDir)\..\YALV\bin\Debug\" /f /y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetPath)" "$(ProjectDir)\..\YALV\bin\Debug\Plugins\" /f /y
+
+xcopy "$(TargetDir)Env*.dll" "$(ProjectDir)\..\YALV\bin\Debug\Plugins\lib\" /f /y
+
+xcopy "$(TargetDir)stdole.dll" "$(ProjectDir)\..\YALV\bin\Debug\Plugins\lib\" /f /y</PostBuildEvent>
   </PropertyGroup>
 </Project>
