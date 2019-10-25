@@ -21,7 +21,7 @@ namespace YALV.CsStackTrackPlugin
         //https://stackoverflow.com/questions/350323/open-a-file-in-visual-studio-at-a-specific-line-number
 
        // private static readonly Regex regex = new Regex(@"^\s*at [\w\.]*\.(?<method>\w*)\([\[\]\w ,&`]*\) in (?<file>\w:[\w\\.\-_]*):line (?<line>\d*)?$");
-        private static readonly Regex regex = new Regex(@"\s*at [\w\.]*\.(?<method>\w*)\([\[\]\w ,&`]*\)(?: in (?<file>\w:[\w\\.\-_]*):line (?<line>\d*))?");
+        private static readonly Regex regex = new Regex(@"\s*(?:at|bei) [\w\.]*\.(?<method>\w*)\([\[\]\w ,&`]*\)(?: in (?<file>\w:[\w\\.\-_]*):(?:line|Zeile) (?<line>\d*))?");
 
         private static IYalvPluginInformation _info = new YalvPluginInformation("C# stack trace highlighting", "Throwable dispaly with C# stack trace highlighting", "(c) 2019 Michel Calonder", new Version(1, 0, 0));
 
