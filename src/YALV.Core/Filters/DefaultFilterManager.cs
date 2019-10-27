@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using YALV.Core.Domain;
+using YALV.Core.Filters.Strings;
 using YALV.Core.Plugins;
 
 namespace YALV.Core.Filters
@@ -36,10 +37,11 @@ namespace YALV.Core.Filters
             else
             {
                 TextBox tb = new TextBox();
-                //tb.AcceptsReturn = false;
                 Style txtStyle = Application.Current.FindResource("RoundWatermarkTextBox") as Style;
                 if (txtStyle != null)
+                {
                     tb.Style = txtStyle;
+                }
                 tb.KeyUp += Tb_KeyUp;
                 ctrl = tb;
             }
@@ -56,12 +58,18 @@ namespace YALV.Core.Filters
 
         public IPropertyFilter CreateFilterProperty(LogItemProperty prop, Control control)
         {
+            IPropertyFilter result;
             if (prop == LogItemProperty.IsMarked)
             {
-                return new SimpleBoolPropertyFilter(((CheckBox)control).IsChecked);
+                result = new SimpleBoolPropertyFilter();
+            }
+            else
+            {
+                result = new ContainsAllTokenStringPropertyFilter(true, true);
             }
 
-            return new SimpleStringIPropertyFilter(((TextBox)control).Text);
+            result.Update(control);
+            return result;
         }
 
         private void Call(object sender)

@@ -12,11 +12,6 @@ namespace YALV.Core.Filters
     {
         private bool? _expectation;
 
-        public SimpleBoolPropertyFilter(bool? expectation)
-        {
-            _expectation = expectation;
-        }
-
         public bool Matches(LogItem item, LogItemProperty property)
         {
             if (!_expectation.HasValue)

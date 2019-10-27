@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.DefaultPlugins", "YALV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.CsStackTrackPlugin", "YALV.CsStackTrackPlugin\YALV.CsStackTrackPlugin.csproj", "{AAA01757-6F1D-4166-B1C9-4A83490EC44F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.Core.Test", "YALV.Core.Test\YALV.Core.Test.csproj", "{553671EF-A694-4922-A450-FF66D0612C76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,14 @@ Global
 		{AAA01757-6F1D-4166-B1C9-4A83490EC44F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AAA01757-6F1D-4166-B1C9-4A83490EC44F}.Release|x86.ActiveCfg = Release|Any CPU
 		{AAA01757-6F1D-4166-B1C9-4A83490EC44F}.Release|x86.Build.0 = Release|Any CPU
+		{553671EF-A694-4922-A450-FF66D0612C76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{553671EF-A694-4922-A450-FF66D0612C76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{553671EF-A694-4922-A450-FF66D0612C76}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{553671EF-A694-4922-A450-FF66D0612C76}.Debug|x86.Build.0 = Debug|Any CPU
+		{553671EF-A694-4922-A450-FF66D0612C76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{553671EF-A694-4922-A450-FF66D0612C76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{553671EF-A694-4922-A450-FF66D0612C76}.Release|x86.ActiveCfg = Release|Any CPU
+		{553671EF-A694-4922-A450-FF66D0612C76}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

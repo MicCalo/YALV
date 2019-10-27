@@ -70,7 +70,13 @@
     <Compile Include="Filters\IPropertyFilterInfo.cs" />
     <Compile Include="Filters\PropertyFilterInfo.cs" />
     <Compile Include="Filters\SimpleBoolPropertyFilter.cs" />
-    <Compile Include="Filters\SimpleStringIPropertyFilter.cs" />
+    <Compile Include="Filters\Strings\AbstractStringPropertyFilter.cs" />
+    <Compile Include="Filters\Strings\AbstractTokenGroupFilter.cs" />
+    <Compile Include="Filters\Strings\ContainsAllTokenStringPropertyFilter.cs" />
+    <Compile Include="Filters\Strings\ContainsFullStringPropertyFilter.cs" />
+    <Compile Include="Filters\Strings\ExcludeStringToken.cs" />
+    <Compile Include="Filters\Strings\IFilterToken.cs" />
+    <Compile Include="Filters\Strings\StringToken.cs" />
     <Compile Include="Model\IDataAccess.cs" />
     <Compile Include="Plugins\Commands\SimpleActionCommand.cs" />
     <Compile Include="Plugins\Formatting\DocumentHelper.cs" />
