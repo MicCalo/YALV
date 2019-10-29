@@ -20,7 +20,7 @@ namespace YALV.Core.Filters.Strings
             }
             if (_withExlusion)
             {
-                input = input.Trim('-');
+                input = input.TrimEnd('-');
             }
             input = input.Trim(' ');
             string[] tokens = input.Split(' ');
