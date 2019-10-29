@@ -31,7 +31,6 @@ namespace YALV.Core.Providers
                                 continue;
 
                             var entry = new LogItem { Id = entryId, Path = dataSource };
-                            entry.IsMarked = (entryId % 2) == 1;
                             entry.Logger = xmlTextReader.GetAttribute("logger");
 
                             entry.TimeStamp = date.AddMilliseconds(Convert.ToDouble(xmlTextReader.GetAttribute("timestamp"))).ToLocalTime();

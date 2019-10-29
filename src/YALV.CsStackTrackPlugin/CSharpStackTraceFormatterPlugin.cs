@@ -1,29 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Documents;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
+using log4net;
 using YALV.Core.Domain;
 using YALV.Core.Plugins;
 using YALV.Core.Plugins.Formatting;
 
 namespace YALV.CsStackTrackPlugin
 {
+    // https://www.helixoft.com/blog/creating-envdte-dte-for-vs-2017-from-outside-of-the-devenv-exe.html
     public class CSharpStackTraceFormatterPlugin : FormattingDetailThrowableCreator
     {
-        //https://stackoverflow.com/questions/21785363/programatically-open-file-in-visual-studio
-        //C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE
-        //https://stackoverflow.com/questions/350323/open-a-file-in-visual-studio-at-a-specific-line-number
+        private static readonly ILog Log = LogManager.GetLogger(typeof(CSharpStackTraceFormatterPlugin));
+        private static readonly Regex Regex = new Regex(@"\s*(?:at|bei) [\w\.]*\.(?<method>\w*)\([\[\]\w ,&`]*\)(?: in (?<file>\w:[\w\\.\-_]*):(?:line|Zeile) (?<line>\d*))?");
 
-       // private static readonly Regex regex = new Regex(@"^\s*at [\w\.]*\.(?<method>\w*)\([\[\]\w ,&`]*\) in (?<file>\w:[\w\\.\-_]*):line (?<line>\d*)?$");
-        private static readonly Regex regex = new Regex(@"\s*(?:at|bei) [\w\.]*\.(?<method>\w*)\([\[\]\w ,&`]*\)(?: in (?<file>\w:[\w\\.\-_]*):(?:line|Zeile) (?<line>\d*))?");
-
-        private static IYalvPluginInformation _info = new YalvPluginInformation("C# stack trace highlighting", "Throwable dispaly with C# stack trace highlighting", "(c) 2019 Michel Calonder", new Version(1, 0, 0));
+        private static IYalvPluginInformation _info = new YalvPluginInformation("C# stack trace highlighting", "Throwable display with C# stack trace highlighting", "(c) 2019 Michel Calonder", new Version(1, 0, 0));
 
         private readonly ICommand _hyperlinkCommand;
 
@@ -44,7 +38,7 @@ namespace YALV.CsStackTrackPlugin
 
         protected override void AddContent(string msg, Paragraph paragraph, FlowDocument doc)
         {
-            MatchCollection mc = regex.Matches(msg);
+            MatchCollection mc = Regex.Matches(msg);
             AddFormatted(msg, paragraph, mc, GetFormat);
         }
 
@@ -70,7 +64,7 @@ namespace YALV.CsStackTrackPlugin
                 return false;
             }
 
-            bool isMatch = regex.IsMatch(item.Throwable);
+            bool isMatch = Regex.IsMatch(item.Throwable);
             return isMatch;
         }
 
@@ -92,22 +86,23 @@ namespace YALV.CsStackTrackPlugin
 
             public void Execute(object parameter)
             {
-                string[] parameters = (string[])parameter;
-                string filename = parameters[0];
-                int fileline = int.Parse(parameters[1]);
-                string vsString = GetVersionString(15);
-                EnvDTE80.DTE2 dte2;
-                dte2 = (EnvDTE80.DTE2)System.Runtime.InteropServices.Marshal.GetActiveObject(vsString);
-                dte2.MainWindow.Activate();
-                EnvDTE.Window w = dte2.ItemOperations.OpenFile(filename, EnvDTE.Constants.vsViewKindTextView);
-                ((EnvDTE.TextSelection)dte2.ActiveDocument.Selection).GotoLine(fileline, true);
-
-
-                /*
-                string args = string.Format("{0} \"{1}\" {2}", 17, parameters[0], parameters[1]);
-                Process.Start(_toolPath, args);
-                Debug.WriteLine("Open hyperlink "+parameter);
-                */
+                int studioVersion = 17;
+                string vsString = GetVersionString(studioVersion);
+                try
+                {
+                    string[] parameters = (string[]) parameter;
+                    string filename = parameters[0];
+                    int fileline = int.Parse(parameters[1]);
+                    EnvDTE80.DTE2 dte2;
+                    dte2 = (EnvDTE80.DTE2) Marshal.GetActiveObject(vsString);
+                    dte2.MainWindow.Activate();
+                    EnvDTE.Window w = dte2.ItemOperations.OpenFile(filename, EnvDTE.Constants.vsViewKindTextView);
+                    ((EnvDTE.TextSelection) dte2.ActiveDocument.Selection).GotoLine(fileline, true);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(string.Format("Couldn't open Visual Studio via DTE. Version assumed to be {0} -> DTE string is {1} ", studioVersion, vsString), ex);
+                }
             }
 
             private static string GetVersionString(int visualStudioVersionNumber)
@@ -116,9 +111,9 @@ namespace YALV.CsStackTrackPlugin
                 switch (visualStudioVersionNumber)
                 {
                     case 17:
-                        return "VisualStudio.DTE.16.0";
-                    case 15:
                         return "VisualStudio.DTE.15.0";
+                    case 15:
+                        return "VisualStudio.DTE.14.0";
                     case 13:
                         return "VisualStudio.DTE.12.0";
                     case 12:
