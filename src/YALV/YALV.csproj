@@ -167,6 +167,7 @@
     </Compile>
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\AddFolderPathVM.cs" />
+    <Compile Include="ViewModel\PluginInfoViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

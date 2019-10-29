@@ -455,6 +455,7 @@ namespace YALV.ViewModel
         protected virtual object commandAboutExecute(object parameter)
         {
             var win = new About() { Owner = _callingWin as Window };
+            win.DataContext = this;
             win.ShowDialog();
             return null;
         }
@@ -1021,6 +1022,19 @@ namespace YALV.ViewModel
         private string _goToLogItemId;
         public static string PROP_GoToLogItemId = "GoToLogItemId";
 
+        public IReadOnlyList<PluginInfoViewModel> PluginInfos
+        {
+            get
+            {
+                if (pluginInfos == null)
+                {
+                    pluginInfos = PluginManager.Instance.GetPlugins<IYalvPlugin>().Select(x => new PluginInfoViewModel(x)).ToList();
+                }
+
+                return pluginInfos;
+            }
+        }
+
         #endregion
 
         #region Public Methods
@@ -1100,6 +1114,8 @@ namespace YALV.ViewModel
         private bool _loadingFileList = false;
 
         private bool _loadingAllFiles = false;
+
+        private IReadOnlyList<PluginInfoViewModel> pluginInfos;
 
         private void refreshCheckBoxBinding()
         {
