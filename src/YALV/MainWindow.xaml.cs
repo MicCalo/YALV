@@ -48,6 +48,7 @@ namespace YALV
             _vm.InitDataGrid();
             _vm.RecentFileList = mainMenu.RecentFileList;
             _vm.RefreshUI = OnRefreshUI;
+            _vm.SetLastItemAsSelected = OnSetLastItemAsSelected;
             this.DataContext = _vm;
 
             //Assign events
@@ -94,6 +95,18 @@ namespace YALV
             OnRefreshUI(MainWindowVM.NOTIFY_ScrollIntoView);
         }
 
+        private void dgItems_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is DataGridCell cell && cell.Column is DataGridCheckBoxColumn)
+            {
+                dgItems.BeginEdit();
+                if (cell.Content is CheckBox chkBox)
+                {
+                    chkBox.IsChecked = !chkBox.IsChecked;
+                }
+            }
+        }
+
         private void InitCulture()
         {
             try
@@ -129,6 +142,12 @@ namespace YALV
             {
                 MessageBox.Show(ex.Message, String.Empty, MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
+        }
+
+        private void OnSetLastItemAsSelected()
+        {
+            if(dgItems.Items.Count > 0)
+                dgItems.SelectedItem = dgItems.Items[dgItems.Items.Count - 1];
         }
     }
 }

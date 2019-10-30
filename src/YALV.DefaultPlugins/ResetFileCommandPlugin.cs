@@ -89,7 +89,7 @@ namespace YALV.DefaultPlugins
 
         public string Text
         {
-            get { return "CLEAR FILE"; }
+            get { return "   CLEAR FILE   "; }
         }
 
         public ICommand Command

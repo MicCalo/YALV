@@ -95,6 +95,7 @@ namespace YALV.Common
                     _cvs.View.Filter = itemCheckFilter;
                     IsFilteringEnabled = true;
                 }
+
                 return _cvs.View;
             }
             return null;

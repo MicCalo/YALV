@@ -15,7 +15,7 @@ namespace YALV.CsStackTrackPlugin
     public class CSharpStackTraceFormatterPlugin : FormattingDetailThrowableCreator
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(CSharpStackTraceFormatterPlugin));
-        private static readonly Regex Regex = new Regex(@"\s*(?:at|bei) [\w\.]*\.(?<method>\w*)\([\[\]\w ,&`]*\)(?: in (?<file>\w:[\w\\.\-_]*):(?:line|Zeile) (?<line>\d*))?");
+        private static readonly Regex Regex = new Regex(@"\s*(?:at|bei) [\w`<>\.]*\.(?<method>[\w\[\]<>_`]*)\([\[\]\w ,&`]*\)(?: in (?<file>\w:[\w\\.\-_]*):(?:line|Zeile) (?<line>\d*))?");
 
         private static IYalvPluginInformation _info = new YalvPluginInformation("C# stack trace highlighting", "Throwable display with C# stack trace highlighting", "(c) 2019 Michel Calonder", new Version(1, 0, 0));
 

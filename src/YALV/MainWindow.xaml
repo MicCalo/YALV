@@ -323,7 +323,7 @@
                                     <CheckBox
                                         IsChecked="{Binding Path=ShowLevelTrace}"
                                         Name="chkShowTrace"
-                                        ToolTip="DEBUG" />
+                                        ToolTip="TRACE" />
                                 </Border>
                                 <Border
                                     Background="{StaticResource DebugLevelColor}">
@@ -961,7 +961,8 @@
                         Name="dgItems"
 						RowStyle="{StaticResource LogItemDataGridRowStyle}"
                         SelectedItem="{Binding Path=SelectedLogItem}"
-						Style="{StaticResource DefaultDataGridStyle}">
+						Style="{StaticResource DefaultDataGridStyle}"
+                        GotFocus="dgItems_GotFocus">
 
                         <DataGrid.ContextMenu>
                             <ContextMenu>
@@ -1015,15 +1016,11 @@
                             FontWeight="DemiBold"
                             Text="{x:Static Properties:Resources.MainWindow_DetailsBox_Message_Text}">
                         </TextBlock>
-                        <ScrollViewer
-                            HorizontalScrollBarVisibility="Disabled"
-                            VerticalScrollBarVisibility="Auto">
-                            <FlowDocumentScrollViewer 
-                                BorderBrush="Silver"
-                                BorderThickness="0,1"
-                                Document="{Binding Path=SelectedLogItem.DetailMessage, Mode=OneWay}">
-                            </FlowDocumentScrollViewer>
-                        </ScrollViewer>
+                        <FlowDocumentScrollViewer 
+                            BorderBrush="Silver"
+                            BorderThickness="0,1"
+                            Document="{Binding Path=SelectedLogItem.DetailMessage, Mode=OneWay}">
+                        </FlowDocumentScrollViewer>
                     </DockPanel>
 
                     <GridSplitter
@@ -1044,15 +1041,11 @@
                             FontWeight="DemiBold"
                             Text="{x:Static Properties:Resources.MainWindow_DetailsBox_Throwable_Text}">
                         </TextBlock>
-                        <ScrollViewer
-                            HorizontalScrollBarVisibility="Disabled"
-                            VerticalScrollBarVisibility="Auto">
-                            <FlowDocumentScrollViewer 
-                                BorderBrush="Silver"
-                                BorderThickness="0,1"
-                                Document="{Binding Path=SelectedLogItem.ThrowableMessage, Mode=OneWay}">
-                            </FlowDocumentScrollViewer>
-                        </ScrollViewer>
+                        <FlowDocumentScrollViewer 
+                            BorderBrush="Silver"
+                            BorderThickness="0,1"
+                            Document="{Binding Path=SelectedLogItem.ThrowableMessage, Mode=OneWay}">
+                        </FlowDocumentScrollViewer>
                     </DockPanel>
                 </Grid>
             </Grid>

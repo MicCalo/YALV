@@ -469,6 +469,8 @@ namespace YALV.ViewModel
         /// </summary>
         public Action<string, object> RefreshUI { get; set; }
 
+        public Action SetLastItemAsSelected { get; set; }
+
         /// <summary>
         /// WindowTitle Property
         /// </summary>
@@ -1404,6 +1406,7 @@ namespace YALV.ViewModel
                                         select it).LastOrDefault<LogItem>();
 
                         SelectedLogItem = lastItem != null ? lastItem : Items[Items.Count - 1];
+                        raiseRefreshUI(NOTIFY_ScrollIntoView);
                     }
                 }
             }
@@ -1453,7 +1456,11 @@ namespace YALV.ViewModel
             {
                 ICollectionView view = GridManager.GetCollectionView();
                 if (view != null)
+                {
                     view.Refresh();
+                    SetLastItemAsSelected();
+                }
+
                 updateFilteredCounters(view);
             }
             raiseRefreshUI(NOTIFY_ScrollIntoView);
