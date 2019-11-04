@@ -19,7 +19,7 @@ namespace YALV.Core.Settings
 
         public Configuration()
         {
-            settings.Add("Files.SuitingFileExtensionRegex", new Regex(@"\.log(.\d)?$"));
+            settings.Add("Files.SuitingFileExtensionRegex", new Regex(@"\.log(.\d{1,2})?$"));
         }
 
         public object Get(string setting)
