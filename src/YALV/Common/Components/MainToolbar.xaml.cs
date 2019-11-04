@@ -41,7 +41,7 @@ namespace YALV.Common
                     {
                         Button btn = new Button();
                         btn.Command = cPlug.Command;
-                        btn.ToolTip = cPlug.Command;
+                        btn.ToolTip = cPlug.ToolTip;
 
                         StackPanel stackPanel = new StackPanel();
                         stackPanel.Children.Add(new Image() { Source = cPlug.ImageSource });

@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.CsStackTrackPlugin", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.Core.Test", "YALV.Core.Test\YALV.Core.Test.csproj", "{553671EF-A694-4922-A450-FF66D0612C76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YALV.MetrohmPlugins", "..\..\MetrohmPlugins\YALV.MetrohmPlugins\YALV.MetrohmPlugins\YALV.MetrohmPlugins.csproj", "{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,14 +69,6 @@ Global
 		{553671EF-A694-4922-A450-FF66D0612C76}.Release|Any CPU.Build.0 = Release|Any CPU
 		{553671EF-A694-4922-A450-FF66D0612C76}.Release|x86.ActiveCfg = Release|Any CPU
 		{553671EF-A694-4922-A450-FF66D0612C76}.Release|x86.Build.0 = Release|Any CPU
-		{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}.Debug|x86.Build.0 = Debug|Any CPU
-		{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}.Release|x86.ActiveCfg = Release|Any CPU
-		{3F014F82-0C5B-4EFC-9708-A852ABEE88DF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -75,7 +75,7 @@ namespace YALV.DefaultPlugins
 
         public string ToolTip
         {
-            get { return "Clears the current File"; }
+            get { return "Clears the current file"; }
         }
 
         public ImageSource ImageSource
