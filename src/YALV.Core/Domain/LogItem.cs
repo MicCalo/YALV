@@ -101,7 +101,7 @@ namespace YALV.Core.Domain
                 case LogItemProperty.IsMarked: return IsMarked;
                 case LogItemProperty.Id: return Id;
                 case LogItemProperty.Path: return Path;
-                case LogItemProperty.TimeStamp: return TimeStamp;
+                case LogItemProperty.TimeStamp: return TimeStamp.ToString(PluginManager.Instance.Context.DateTimeFormat);
                 case LogItemProperty.Logger: return Logger;
                 case LogItemProperty.Thread: return Thread;
                 case LogItemProperty.Message: return Message;

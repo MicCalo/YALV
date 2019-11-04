@@ -27,7 +27,16 @@ namespace YALV.Common
             if (_cvs != null)
             {
                 if (_cvs.View != null)
-                    _cvs.View.Filter = null;
+                {
+                    try
+                    {
+                        _cvs.View.Filter = null;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
+                }
+
                 BindingOperations.ClearAllBindings(_cvs);
             }
             base.OnDispose();

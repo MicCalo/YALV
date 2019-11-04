@@ -27,6 +27,7 @@ namespace YALV.ViewModel
         {
             _callingWin = win;
             PluginManager.Instance.Context.DataAccess = this;
+            PluginManager.Instance.Context.DateTimeFormat = GlobalHelper.DisplayDateTimeFormat;
 
             CommandExit = new CommandRelay(commandExitExecute, p => true);
             CommandOpenFile = new CommandRelay(commandOpenFileExecute, commandOpenFileCanExecute);
@@ -1024,6 +1025,38 @@ namespace YALV.ViewModel
         private string _goToLogItemId;
         public static string PROP_GoToLogItemId = "GoToLogItemId";
 
+        
+        public void GoToNextMarked()
+        {
+            int start = Items.IndexOf(SelectedLogItem);
+            int pos = start + 1;
+            if (start < 0)
+            {
+                start = 0;
+            }
+
+            if (pos >= Items.Count)
+            {
+                pos = 0;
+            }
+
+            while (!Items[pos].IsMarked)
+            {
+                pos++;
+                if (pos >= Items.Count)
+                {
+                    pos = 0;
+                }
+
+                if (pos == start)
+                {
+                    return;
+                }
+            }
+
+            SelectedLogItem = Items[pos];
+        }
+
         public IReadOnlyList<PluginInfoViewModel> PluginInfos
         {
             get
@@ -1441,9 +1474,8 @@ namespace YALV.ViewModel
                     new ColumnItem("Thread", 44, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_ThreadColumn_Header},
                     new ColumnItem("Class", null, 300){Header = Resources.MainWindowVM_InitDataGrid_ClassColumn_Header},
                     new ColumnItem("Method", 200, null){Header = Resources.MainWindowVM_InitDataGrid_MethodColumn_Header}
-                    //new ColumnItem("Delta", 60, null, CellAlignment.CENTER, null, "Δ"),
-                    //new ColumnItem("Path", 50)
                 };
+
                 GridManager.BuildDataGrid(dgColumns);
                 GridManager.AssignSource(new Binding(MainWindowVM.PROP_Items) { Source = this, Mode = BindingMode.OneWay });
                 GridManager.OnBeforeCheckFilter = levelCheckFilter;
@@ -1870,5 +1902,6 @@ namespace YALV.ViewModel
         }
 
         #endregion
+
     }
 }

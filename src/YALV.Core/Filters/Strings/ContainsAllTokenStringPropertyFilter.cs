@@ -16,8 +16,9 @@ namespace YALV.Core.Filters.Strings
         {
             if (string.IsNullOrEmpty(input))
             {
-                return new IFilterToken[0];
+                return null;
             }
+
             if (_withExlusion)
             {
                 input = input.TrimEnd('-');

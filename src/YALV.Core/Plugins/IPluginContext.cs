@@ -9,6 +9,8 @@ namespace YALV.Core.Plugins
         IDataAccess DataAccess { get; set; }
         DirectoryInfo PluginDirectory { get; }
         IConfiguration Configuration { get; }
+
+        string DateTimeFormat { get; set; }
     }
 
     public class PluginContext : IPluginContext
@@ -22,6 +24,8 @@ namespace YALV.Core.Plugins
         }
 
         public IDataAccess DataAccess { get; set; }
+
+        public string DateTimeFormat { get; set; }
 
         public DirectoryInfo PluginDirectory
         {

@@ -9,7 +9,7 @@
     Width="1250"
     Title="{Binding Path=WindowTitle, Mode=OneWay}"
     WindowStartupLocation="CenterScreen"
-    AllowDrop="True">
+    AllowDrop="True" KeyDown="MainWindow_OnKeyDown">
 
     <Window.Resources>
         <converters:BoolToOppositeVisibilityConverter

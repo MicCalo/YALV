@@ -166,5 +166,17 @@ namespace YALV
             if(dgItems.Items.Count > 0)
                 dgItems.SelectedItem = dgItems.Items[dgItems.Items.Count - 1];
         }
+
+
+        private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (e.Key == Key.M)
+                {
+                    _vm.GoToNextMarked();
+                }
+            }
+        }
     }
 }
