@@ -83,11 +83,9 @@ namespace YALV.Common
 
                         LogItemProperty prop = (LogItemProperty)Enum.Parse(typeof(LogItemProperty), item.Field);
                         IPropertyFilterInfo info = FilterManager.CreateFilterInfo(prop, _filterChanged);
-                        //  Control ctrl = info.Control;
                         info.Control.SetBinding(TextBox.WidthProperty, widthBind);
                         info.Control.ToolTip = String.Format(Resources.FilteredGridManager_BuildDataGrid_FilterTextBox_Tooltip, item.Header);
                         info.Control.Tag = info.Control.ToolTip.ToString().ToLower();
-                        //RegisterControl(_txtSearchPanel, info.Control.Name, info.Control);
                         _txtSearchPanel.Children.Add(info.Control);
 
                         Filter.Add(prop, info.Filter);
@@ -128,15 +126,6 @@ namespace YALV.Common
 
             _txtSearchPanel.Children.Remove(textBox);
             _txtSearchPanel.Children.Insert(displayOrder, textBox);
-        }
-
-        private void RegisterControl(FrameworkElement element, string controlName, Control control)
-        {
-            if (element.FindName(controlName) != null)
-            {
-                element.UnregisterName(controlName);
-            }
-            element.RegisterName(controlName, control);
         }
 
         #endregion

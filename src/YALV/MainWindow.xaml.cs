@@ -17,9 +17,11 @@
 using System;
 using System.Configuration;
 using System.Globalization;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using YALV.Common;
 using YALV.Common.Interfaces;
 using YALV.ViewModel;
@@ -31,20 +33,19 @@ namespace YALV
     /// </summary>
     public partial class MainWindow : Window, IWinSimple
     {
+        private readonly Timer _refreshDelayTimer = new Timer(200);
+        private readonly MainWindowVM _vm;
+
         public MainWindow(string[] args)
         {
+            _refreshDelayTimer.Elapsed += HandleTimerElapsed;
             InitCulture();
 
             InitializeComponent();
 
             //Initialize and assign ViewModel
-            MainWindowVM _vm = new MainWindowVM(this);
-            _vm.GridManager = new FilteredGridManager(dgItems, txtSearchPanel, (prop, ctrl) => _vm.RefreshView());
-         //      (delegate (object sender, KeyEventArgs e)
-         //  {
-         //      if (e.OriginalSource is TextBox)
-         //          _vm.RefreshView();
-         //  });
+            _vm = new MainWindowVM(this);
+            _vm.GridManager = new FilteredGridManager(dgItems, txtSearchPanel, (prop, ctrl) => Refresh());
             _vm.InitDataGrid();
             _vm.RecentFileList = mainMenu.RecentFileList;
             _vm.RefreshUI = OnRefreshUI;
@@ -75,6 +76,22 @@ namespace YALV
                     _vm.LoadFileList(pathList, add);
                 }
             };
+        }
+
+        private void Refresh()
+        {
+            if (_refreshDelayTimer.Enabled)
+            {
+                _refreshDelayTimer.Stop();
+                _refreshDelayTimer.Interval = 200;
+            }
+            _refreshDelayTimer.Start();
+        }
+
+        private void HandleTimerElapsed(object sender, ElapsedEventArgs args)
+        {
+            _refreshDelayTimer.Stop();
+            Dispatcher.Invoke(_vm.RefreshView, DispatcherPriority.ApplicationIdle);
         }
 
         public static System.Globalization.CultureInfo ResolvedCulture
