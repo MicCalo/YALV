@@ -46,7 +46,7 @@ namespace YALV
             //Initialize and assign ViewModel
             _vm = new MainWindowVM(this);
             _vm.GridManager = new FilteredGridManager(dgItems, txtSearchPanel, (prop, ctrl) => Refresh());
-            _vm.InitDataGrid();
+            _vm.InitDataGrid((ContextMenu)FindResource("HeaderContextMenu"));
             _vm.RecentFileList = mainMenu.RecentFileList;
             _vm.RefreshUI = OnRefreshUI;
             _vm.SetLastItemAsSelected = OnSetLastItemAsSelected;

@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Shell;
 using System.Windows.Threading;
@@ -1455,30 +1457,68 @@ namespace YALV.ViewModel
         /// </summary>
         public FilteredGridManager GridManager { get; set; }
 
-        public void InitDataGrid()
+        private static readonly string[] columns = new[]
+        {
+            "IsMarked", "Id", "TimeStamp", "Level", "Message", "Thread", "Logger", "MachineName", "HostName", "UserName", "App",
+            "Class", "Method"
+        };
+
+        public void InitDataGrid(ContextMenu ctxMenu)
         {
             if (GridManager != null)
             {
-                IList<ColumnItem> dgColumns = new List<ColumnItem>()
+                string[] columnsToShow =  new[]
                 {
-                    new ColumnItem("IsMarked", 20, 20, CellAlignment.CENTER,string.Empty){Header = "Mark"},
-                    new ColumnItem("Id", 37, null, CellAlignment.CENTER,string.Empty){Header = Resources.MainWindowVM_InitDataGrid_IdColumn_Header},
-                    new ColumnItem("TimeStamp", 120, null, CellAlignment.CENTER, GlobalHelper.DisplayDateTimeFormat){Header = Resources.MainWindowVM_InitDataGrid_TimeStampColumn_Header},
-                    new ColumnItem("Level", null, 50, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_LevelColumn_Header},
-                    new ColumnItem("Message", null, 300){Header = Resources.MainWindowVM_InitDataGrid_MessageColumn_Header},
-                    new ColumnItem("Logger", 150, null){Header = Resources.MainWindowVM_InitDataGrid_LoggerColumn_Header},
-                    new ColumnItem("MachineName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_MachineNameColumn_Header},
-                    new ColumnItem("HostName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_HostNameColumn_Header},
-                    new ColumnItem("UserName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_UserNameColumn_Header},
-                    new ColumnItem("App", 150, null){Header = Resources.MainWindowVM_InitDataGrid_AppColumn_Header},
-                    new ColumnItem("Thread", 44, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_ThreadColumn_Header},
-                    new ColumnItem("Class", null, 300){Header = Resources.MainWindowVM_InitDataGrid_ClassColumn_Header},
-                    new ColumnItem("Method", 200, null){Header = Resources.MainWindowVM_InitDataGrid_MethodColumn_Header}
+                    "IsMarked", "Id", "TimeStamp", "Level", "Message"
                 };
+                /*
+                ContextMenu ctxMenu = (ContextMenu)window.FindResource("HeaderContextMenu");
+                ctxMenu.Items.Add(CreateMenuItem("Hide", "hide"));
+                MenuItem s = CreateMenuItem("Show");
+                ctxMenu.Items.Add(s);
+
+                foreach (string p in columns)
+                {
+                    if (!)
+                    {
+                        s.Items.Add(CreateMenuItem(p, p));
+                    }
+                }*/
+
+                IList<ColumnItem> dgColumns = new List<ColumnItem>();
+
+                foreach (string key in columns)
+                {
+                    ColumnItem col = CreateColumn(key);
+                    col.IsVisible = columnsToShow.Contains(key);
+                    dgColumns.Add(col);
+                }
 
                 GridManager.BuildDataGrid(dgColumns);
+                GridManager.BuildHeaderCtxMenu(dgColumns, ctxMenu);
                 GridManager.AssignSource(new Binding(MainWindowVM.PROP_Items) { Source = this, Mode = BindingMode.OneWay });
                 GridManager.OnBeforeCheckFilter = levelCheckFilter;
+            }
+        }
+
+        private ColumnItem CreateColumn(string key)
+        {
+            switch (key)
+            {
+                case("IsMarked"): return new ColumnItem("IsMarked", 20, 20, CellAlignment.CENTER,string.Empty){Header = "Mark"};
+                case("Id"): return new ColumnItem("Id", 37, null, CellAlignment.CENTER,string.Empty){Header = Resources.MainWindowVM_InitDataGrid_IdColumn_Header};
+                case("TimeStamp"): return new ColumnItem("TimeStamp", 120, null, CellAlignment.CENTER, GlobalHelper.DisplayDateTimeFormat){Header = Resources.MainWindowVM_InitDataGrid_TimeStampColumn_Header};
+                case("Level"): return new ColumnItem("Level", null, 50, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_LevelColumn_Header};
+                case("Message"): return new ColumnItem("Message", null, 300){Header = Resources.MainWindowVM_InitDataGrid_MessageColumn_Header};
+                case("Logger"): return new ColumnItem("Logger", 150, null){Header = Resources.MainWindowVM_InitDataGrid_LoggerColumn_Header};
+                case("MachineName"): return new ColumnItem("MachineName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_MachineNameColumn_Header};
+                case("HostName"): return new ColumnItem("HostName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_HostNameColumn_Header};
+                case("UserName"): return new ColumnItem("UserName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_UserNameColumn_Header};
+                case("App"): return new ColumnItem("App", 150, null){Header = Resources.MainWindowVM_InitDataGrid_AppColumn_Header};
+                case("Thread"): return new ColumnItem("Thread", 44, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_ThreadColumn_Header};
+                case("Class"): return new ColumnItem("Class", null, 300){Header = Resources.MainWindowVM_InitDataGrid_ClassColumn_Header};
+                case("Method"): return new ColumnItem("Method", 200, null){Header = Resources.MainWindowVM_InitDataGrid_MethodColumn_Header};
+                default:throw new NotSupportedException("Column '"+key+"' not recognized");
             }
         }
 

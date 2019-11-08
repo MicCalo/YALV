@@ -62,6 +62,10 @@
         Color="#777"
         PresentationOptions:Freeze="True" />
 
+    <!-- Header context menu -->
+    <ContextMenu x:Key="HeaderContextMenu">
+    </ContextMenu>
+
     <!-- LEVEL COLORS -->
     <SolidColorBrush
         x:Key="TraceLevelColor"
@@ -339,6 +343,7 @@
         <Setter
             Property="Height"
             Value="20" />
+        <Setter Property="ContextMenu" Value="{StaticResource HeaderContextMenu}"/>
         <Setter
             Property="Template">
             <Setter.Value>

@@ -952,6 +952,7 @@
                         </ScrollViewer>
                     </Border>
 
+ 
                     <DataGrid
 						CanUserReorderColumns="True"
                         CellStyle="{StaticResource DefaultDataGridCellStyle}"
@@ -982,6 +983,8 @@
                             <SolidColorBrush
                                 x:Key="{x:Static SystemColors.HighlightBrushKey}"
                                 Color="#19000000" />
+
+                            
                         </DataGrid.Resources>
                     </DataGrid>
                 </DockPanel>
