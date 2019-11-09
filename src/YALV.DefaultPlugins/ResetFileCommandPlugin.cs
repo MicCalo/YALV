@@ -70,7 +70,7 @@ namespace YALV.DefaultPlugins
 
         public int Priority
         {
-            get { return 0; }
+            get { return 100; }
         }
 
         public string ToolTip
