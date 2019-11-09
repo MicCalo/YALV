@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Media;
 using YALV.Common.Converters;
 using YALV.Core.Domain;
 using YALV.Core.Filters;
@@ -27,6 +26,7 @@ namespace YALV.Common
 
         private Style _centerCellStyle;
         private AdjustValueConverter _adjConv;
+        private Dictionary<string, Tuple<DataGridColumn, Control, string>> columnMap = new Dictionary<string, Tuple<DataGridColumn, Control, string>>();
 
         #endregion
 
@@ -71,9 +71,11 @@ namespace YALV.Common
                         col.Width = item.Width.Value;
 
                     col.Visibility = item.IsVisible ? Visibility.Visible : Visibility.Collapsed;
+
                     //Add column to datagrid
                     _dg.Columns.Add(col);
 
+                    Control filterControl = null;
                     if (_txtSearchPanel != null)
                     {
                         Binding widthBind = new Binding()
@@ -90,28 +92,33 @@ namespace YALV.Common
                         info.Control.SetBinding(TextBox.WidthProperty, widthBind);
                         info.Control.ToolTip = String.Format(Resources.FilteredGridManager_BuildDataGrid_FilterTextBox_Tooltip, item.Header);
                         info.Control.Tag = info.Control.ToolTip.ToString().ToLower();
-                        _txtSearchPanel.Children.Add(info.Control);
+                        info.Control.Visibility = item.IsVisible ? Visibility.Visible : Visibility.Collapsed;
+                        info.Control.Name = getTextBoxName(item.Field);
 
+                        _txtSearchPanel.Children.Add(info.Control);
+                        filterControl = info.Control;
                         Filter.Add(prop, info.Filter);
                     }
+                    columnMap.Add(item.Header, new Tuple<DataGridColumn, Control, string>(col, filterControl, item.Field));
                 }
             }
 
             _dg.ColumnReordered += OnColumnReordered;
         }
 
-        private MenuItem CreateMenuItem(string txt, string tag)
+        internal string[] GetColumnOder()
         {
-            MenuItem result = new MenuItem(){Header = txt};
-            if (tag != null)
+            List<string> columns = new List<string>();
+            foreach(KeyValuePair<string, Tuple<DataGridColumn, Control, string>> t in columnMap)
             {
-                result.Tag = tag;
-                result.Click += HandleMenuItemClick;
-
+                if (t.Value.Item1.Visibility == Visibility.Visible)
+                {
+                    columns.Add(t.Value.Item3);
+                }
             }
-            return result;
+            return columns.ToArray();
         }
-
+        
         public void BuildHeaderCtxMenu(IList<ColumnItem> columns, ContextMenu ctxMenu)
         {
             ctxMenu.Items.Add(CreateMenuItem("Hide", "-hide-"));
@@ -129,7 +136,18 @@ namespace YALV.Common
 
         #region Private methods
 
-        
+        private MenuItem CreateMenuItem(string txt, string tag)
+        {
+            MenuItem result = new MenuItem() { Header = txt };
+            if (tag != null)
+            {
+                result.Tag = tag;
+                result.Click += HandleMenuItemClick;
+
+            }
+            return result;
+        }
+
         private void HandleMenuItemClick(object sender, RoutedEventArgs  o)
         {
             MenuItem item = (MenuItem) sender;
@@ -143,51 +161,24 @@ namespace YALV.Common
 
             if ("-hide-".Equals(tag))
             {
-                DataGridColumnHeader hdr = (DataGridColumnHeader) menu.PlacementTarget;
+                DataGridColumnHeader hdr = (DataGridColumnHeader)menu.PlacementTarget;
                 hdr.Column.Visibility = Visibility.Collapsed;
-                MenuItem i = Get(menu, hdr.Content);
+                string key = hdr.Content.ToString();
+                MenuItem i = Get(menu, key);
                 if (i != null)
                 {
                     i.Visibility = Visibility.Visible;
                 }
+                columnMap[key].Item2.Visibility = Visibility.Collapsed;
             }
             else
             {
-                foreach (DataGridColumn col in _dg.Columns)
-                {
+                Tuple< DataGridColumn, Control, string> t = columnMap[tag];
 
-                    DataGridColumnHeader hdr = GetHeader(col, _dg);
-                    if (hdr.Content.Equals(tag))
-                    {
-                        col.Visibility = Visibility.Visible;
-                        break;
-                    }
-                }
-
+                t.Item1.Visibility = Visibility.Visible;
+                t.Item2.Visibility = Visibility.Visible;
                 item.Visibility = Visibility.Collapsed;
             }
-        }
-
-        private DataGridColumnHeader GetHeader(DataGridColumn column, DependencyObject reference)
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(reference); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(reference, i);
-
-                DataGridColumnHeader colHeader = child as DataGridColumnHeader;
-                if ((colHeader != null) && (colHeader.Column == column))
-                {
-                    return colHeader;
-                }
-
-                colHeader = GetHeader(column, child);
-                if (colHeader != null)
-                {
-                    return colHeader;
-                }
-            }
-
-            return null;
         }
 
         private MenuItem Get(ContextMenu menu, object tag)

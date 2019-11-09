@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Configuration;
 using System.Globalization;
 using System.Timers;
@@ -24,6 +25,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using YALV.Common;
 using YALV.Common.Interfaces;
+using YALV.Core.Plugins;
 using YALV.ViewModel;
 
 namespace YALV
@@ -35,6 +37,12 @@ namespace YALV
     {
         private readonly Timer _refreshDelayTimer = new Timer(200);
         private readonly MainWindowVM _vm;
+
+        private void HandleWindowClose(object sender, CancelEventArgs e)
+        {
+            _vm.SaveSettings();
+            PluginManager.Instance.Context.Configuration.Save();
+        }
 
         public MainWindow(string[] args)
         {
@@ -76,6 +84,8 @@ namespace YALV
                     _vm.LoadFileList(pathList, add);
                 }
             };
+
+            Closing += HandleWindowClose;
         }
 
         private void Refresh()

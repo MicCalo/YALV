@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Shell;
 using System.Windows.Threading;
@@ -69,6 +68,12 @@ namespace YALV.ViewModel
             IsAutoRefreshEnabled = false;
 
             refreshWindowTitle();
+        }
+
+        internal void SaveSettings()
+        {
+            string[] columns =  GridManager.GetColumnOder();
+            PluginManager.Instance.Context.Configuration.Set("View.ColumnHeaders", columns);
         }
 
         protected override void OnDispose()
@@ -1467,24 +1472,7 @@ namespace YALV.ViewModel
         {
             if (GridManager != null)
             {
-                string[] columnsToShow =  new[]
-                {
-                    "IsMarked", "Id", "TimeStamp", "Level", "Message"
-                };
-                /*
-                ContextMenu ctxMenu = (ContextMenu)window.FindResource("HeaderContextMenu");
-                ctxMenu.Items.Add(CreateMenuItem("Hide", "hide"));
-                MenuItem s = CreateMenuItem("Show");
-                ctxMenu.Items.Add(s);
-
-                foreach (string p in columns)
-                {
-                    if (!)
-                    {
-                        s.Items.Add(CreateMenuItem(p, p));
-                    }
-                }*/
-
+                string[] columnsToShow = PluginManager.Instance.Context.Configuration.Get<string[]>("View.ColumnHeaders");
                 IList<ColumnItem> dgColumns = new List<ColumnItem>();
 
                 foreach (string key in columns)

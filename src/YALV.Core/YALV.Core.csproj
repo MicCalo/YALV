@@ -99,6 +99,8 @@
     <Compile Include="Providers\MsSqlServerEntriesProvider.cs" />
     <Compile Include="Providers\SqliteEntriesProvider.cs" />
     <Compile Include="Providers\XmlEntriesProvider.cs" />
+    <Compile Include="Settings\ConfigIo.cs" />
+    <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Settings\IConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
