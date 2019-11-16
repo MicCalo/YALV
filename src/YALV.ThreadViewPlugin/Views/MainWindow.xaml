@@ -19,6 +19,6 @@
         </Grid.RowDefinitions>
         <DataGrid x:Name="DataGrid" BorderThickness="0">
         </DataGrid>
-        <ListView Grid.Row="1" ItemsSource="{Binding Items}"/>
+        <ListBox Grid.Row="1" ItemsSource="{Binding Items}"/>
     </Grid>
 </Window>

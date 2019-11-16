@@ -9,14 +9,15 @@ using YALV.ThreadViewPlugin.ViewModels;
 
 namespace YALV.ThreadViewPlugin.Views
 {
-    internal class ItemView : Panel
+    internal class ItemView : StackPanel
     {
         private static readonly Pen pen = new Pen(Brushes.Gray, 0.5);
-        private static readonly Pen grpPen = new Pen(Brushes.Black, 1);
+        private static readonly Pen grpPen = new Pen(Brushes.Gray, 1);
         private static readonly Typeface itemTypeface = new Typeface("Segeo UI");
         private Rect btnRect;
 
-        private static double size = 9;
+        private static double size = 10;
+        private static double btnSize = 10;
 
         public ItemView()
         {
@@ -71,7 +72,6 @@ namespace YALV.ThreadViewPlugin.Views
             }
             else if (grpVm != null)
             {
-
                 DrawBtn(dc, grpVm.Thread.MainViewModel.GrpHeader.Center, size / 2 - 5, true);
                 vm = grpVm;
                 color = Brushes.Gray;
@@ -123,7 +123,7 @@ namespace YALV.ThreadViewPlugin.Views
                 double y = size / 2 - 5;
                 if ((vm.Group.Count % 2) == 0)
                 {
-                    y = -size / 2 - 3;
+                    y = -10;
                 }
                 DrawBtn(dc, center, y, false);
             }
@@ -131,13 +131,13 @@ namespace YALV.ThreadViewPlugin.Views
 
         private void DrawBtn(DrawingContext dc, double center, double y, bool plus)
         {
-            btnRect = new Rect(center - 8, y, 12, 12);
+            btnRect = new Rect(center - btnSize/2 - 2, y, btnSize, btnSize);
             dc.DrawRectangle(Brushes.White, grpPen, btnRect);
             if (plus)
             {
-                dc.DrawLine(grpPen, new Point(center - 2, y + 2), new Point(center - 2, y + 10));
+                dc.DrawLine(grpPen, new Point(center - 2, y + 2), new Point(center - 2, y + btnSize-2));
             }
-            dc.DrawLine(grpPen, new Point(center - 6, y + 6), new Point(center + 2, y + 6));
+            dc.DrawLine(grpPen, new Point(center - btnSize/2, y + btnSize/2), new Point(center + btnSize/2 - 4, y + btnSize/2));
         }
 
         private FormattedText GetText(string s, double maxWidth, Brush color)

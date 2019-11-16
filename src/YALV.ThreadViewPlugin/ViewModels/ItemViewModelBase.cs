@@ -3,7 +3,7 @@
     internal abstract class ItemViewModelBase
     {
         protected const string FullTimeString = "hh:MM:ss.fff";
-        protected readonly string[] TimeStringOrder = new string[] { FullTimeString, "hh:MM:ss", "hh:MM"};
+        protected readonly string[] TimeStringOrder = new string[] { FullTimeString, "hh:MM:ss.ff", "hh:MM:ss.f", "hh:MM:ss", "hh:MM" };
 
         private readonly ThreadViewModel threadViewModel;
 
