@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,17 +13,37 @@ namespace YALV.ThreadViewPlugin.ViewModels
     {
         private List<ThreadViewModel> threads;
         private List<HeaderViewModel> headers = new List<HeaderViewModel>();
-        private List<ItemViewModel> entries = new List<ItemViewModel>();
+        private List<ItemViewModelBase> entries = new List<ItemViewModelBase>();
         private DataGrid dataGrid;
 
         public HeaderViewModel GrpHeader { get; private set; }
+
+        internal void Collapse(GroupedItemViewModel grp)
+        {
+            ItemViewModel first = grp.First;
+            int firstPos = entries.IndexOf(first);
+            entries.RemoveRange(firstPos, grp.Count);
+            entries.Insert(firstPos, grp);
+
+            FirePropertyChanged("Items");
+        }
+
+        internal void Expand(GroupedItemViewModel grp)
+        {
+            int pos = entries.IndexOf(grp);
+            entries.RemoveAt(pos);
+            entries.InsertRange(pos, grp.Items);
+
+            FirePropertyChanged("Items");
+        }
+
         public HeaderViewModel IdHeader { get; private set; }
         public HeaderViewModel TimeHeader { get; private set; }
 
         public MainViewModel(IEnumerable<LogItem> items)
         {
             Dictionary<string, ThreadViewModel> threadDict = new Dictionary<string, ThreadViewModel>();
-            GrpHeader = new HeaderViewModel("", 10, 15);
+            GrpHeader = new HeaderViewModel("", 13, 17);
             IdHeader = new HeaderViewModel("Id", 10, 25);
             TimeHeader = new HeaderViewModel("Time", 20, 75);
             ItemViewModel previous = null;
@@ -35,12 +56,28 @@ namespace YALV.ThreadViewPlugin.ViewModels
                     threadDict.Add(item.Thread, t);
                 }
 
+                
+
                 ItemViewModel e = new ItemViewModel(item, previous, t);
                 entries.Add(e);
+                if (previous != null && previous.Thread == t)
+                {
+                    if (previous.Group == null)
+                    {
+                        previous.Group = new GroupedItemViewModel(t);
+                        previous.Group.Add(previous);
+                    }
+                    e.Group = previous.Group;
+                    e.Group.Add(e);
+                }
+
                 previous = e;
             }
             threads = threadDict.Values.ToList();
-            headers.Add(GrpHeader);
+            if (GrpHeader != null)
+            {
+                headers.Add(GrpHeader);
+            }
             headers.Add(IdHeader);
             headers.Add(TimeHeader);
             headers.AddRange(threads);
@@ -83,8 +120,8 @@ namespace YALV.ThreadViewPlugin.ViewModels
                     HeaderViewModel t = hdr.DataContext as HeaderViewModel;
                     t.Width = col.ActualWidth;
                     t.Left = x;
+                    x += col.ActualWidth;
                 }
-                x += col.ActualWidth;
             }
             FirePropertyChanged("Items");
         }
@@ -96,6 +133,6 @@ namespace YALV.ThreadViewPlugin.ViewModels
 
         public IReadOnlyList<ThreadViewModel> Threads { get { return threads.ToList(); } }
 
-        public IReadOnlyList<ItemViewModel> Items { get { return entries.AsReadOnly(); } }
+        public IReadOnlyList<ItemViewModelBase> Items { get { return entries.AsReadOnly(); } }
     }
 }
