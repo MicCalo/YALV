@@ -1083,6 +1083,9 @@ namespace YALV.ViewModel
 
         public void LoadFileList(string[] pathList, bool add = false)
         {
+            if (pathList == null)
+                return;
+
             SelectedFile = null;
 
             _loadingFileList = true;
