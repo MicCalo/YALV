@@ -129,7 +129,11 @@ namespace YALV
                 dgItems.BeginEdit();
                 if (cell.Content is CheckBox chkBox)
                 {
-                    chkBox.IsChecked = !chkBox.IsChecked;
+                    bool checkItem = (bool)!chkBox.IsChecked;
+                    LogItem logItem = (LogItem)cell.DataContext;
+
+                    logItem.IsMarked = checkItem;
+                    chkBox.IsChecked = checkItem;
                 }
             }
         }
