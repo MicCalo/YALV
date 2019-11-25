@@ -9,7 +9,7 @@
     Width="1250"
     Title="{Binding Path=WindowTitle, Mode=OneWay}"
     WindowStartupLocation="CenterScreen"
-    AllowDrop="True">
+    AllowDrop="True" KeyDown="MainWindow_OnKeyDown">
 
     <Window.Resources>
         <converters:BoolToOppositeVisibilityConverter
@@ -329,7 +329,7 @@
                                     <CheckBox
                                         IsChecked="{Binding Path=ShowLevelTrace}"
                                         Name="chkShowTrace"
-                                        ToolTip="DEBUG" />
+                                        ToolTip="TRACE" />
                                 </Border>
                                 <Border
                                     Background="{StaticResource DebugLevelColor}">
@@ -958,6 +958,7 @@
                         </ScrollViewer>
                     </Border>
 
+ 
                     <DataGrid
 						CanUserReorderColumns="True"
                         CellStyle="{StaticResource DefaultDataGridCellStyle}"
@@ -988,6 +989,8 @@
                             <SolidColorBrush
                                 x:Key="{x:Static SystemColors.HighlightBrushKey}"
                                 Color="#19000000" />
+
+                            
                         </DataGrid.Resources>
                     </DataGrid>
                 </DockPanel>

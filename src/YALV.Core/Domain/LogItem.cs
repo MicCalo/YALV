@@ -68,6 +68,16 @@ namespace YALV.Core.Domain
             }
         }
 
+        public object ThrowableMessage
+        {
+            get
+            {
+                IReadOnlyList<ILogThrowableDetailPlugin> formatterPlugins = PluginManager.Instance.GetPlugins<ILogThrowableDetailPlugin>();
+                ILogThrowableDetailPlugin formatter = formatterPlugins.FirstOrDefault(x => x.IsSuitingForDetailThrowabe(this));
+                return formatter.GenerateThrowable(this);
+            }
+        }
+
         /// <summary>
         /// Level Property
         /// </summary>
@@ -91,7 +101,7 @@ namespace YALV.Core.Domain
                 case LogItemProperty.IsMarked: return IsMarked;
                 case LogItemProperty.Id: return Id;
                 case LogItemProperty.Path: return Path;
-                case LogItemProperty.TimeStamp: return TimeStamp;
+                case LogItemProperty.TimeStamp: return TimeStamp.ToString(PluginManager.Instance.Context.DateTimeFormat);
                 case LogItemProperty.Logger: return Logger;
                 case LogItemProperty.Thread: return Thread;
                 case LogItemProperty.Message: return Message;
@@ -105,6 +115,7 @@ namespace YALV.Core.Domain
                 case LogItemProperty.File: return File;
                 case LogItemProperty.Line: return Line;
                 case LogItemProperty.Uncategorized: return Uncategorized;
+                case LogItemProperty.Level: return Level;
                 case LogItemProperty.LevelIndex: return LevelIndex;
                 default: throw new NotImplementedException("Property " + prop);
             }

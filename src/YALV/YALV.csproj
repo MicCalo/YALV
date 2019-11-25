@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>YALV</RootNamespace>
     <AssemblyName>YALV</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -79,6 +79,9 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -164,6 +167,7 @@
     </Compile>
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\AddFolderPathVM.cs" />
+    <Compile Include="ViewModel\PluginInfoViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -250,6 +254,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.zh-CN.resx" />
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -296,7 +301,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>if not exist "$(TargetDir)Plugins\" mkdir "$(TargetDir)Plugins\"</PreBuildEvent>
+    <PreBuildEvent>if not exist "$(TargetDir)Plugins\" mkdir "$(TargetDir)Plugins\"
+
+if not exist "$(TargetDir)Plugins\lib\" mkdir "$(TargetDir)Plugins\lib"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
