@@ -74,6 +74,11 @@
             Command="{Binding Path=CommandDelete}"
             InputGestureText="DEL">
         </MenuItem>
+        <MenuItem
+            Header="{x:Static Properties:Resources.Common_Components_MainMenu_ViewMenu_RemoveLogFile_Header}"
+            Command="{Binding Path=CommandRemoveLogFile}"
+            InputGestureText="Ctrl+DEL">
+        </MenuItem>
     </MenuItem>
     <MenuItem
         Header="{x:Static Properties:Resources.Common_Components_MainMenu_AboutMenu_Header}"

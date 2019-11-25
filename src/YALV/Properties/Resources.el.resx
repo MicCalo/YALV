@@ -529,4 +529,16 @@
   <data name="MainWindow_FilesListBoxContextMenu_SelectNone_Header" xml:space="preserve">
     <value>Τα καθαρίζω όλα</value>
   </data>
+  <data name="MainWindow_FilesListBoxContextMenu_RemoveLogFile_Header" xml:space="preserve">
+    <value>Remove File</value>
+  </data>
+  <data name="Common_Components_MainMenu_ViewMenu_RemoveLogFile_Header" xml:space="preserve">
+    <value>Remove File</value>
+  </data>
+  <data name="Common_Components_MainToolbar_RemoveSelectedFile_Tooltip" xml:space="preserve">
+    <value>Remove selected file</value>
+  </data>
+  <data name="Common_Components_MainToolbar_RemoveSelectedFile_Text" xml:space="preserve">
+    <value>REMOVE FILE</value>
+  </data>
 </root>

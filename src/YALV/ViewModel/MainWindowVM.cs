@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Shell;
 using System.Windows.Threading;
@@ -26,6 +28,7 @@ namespace YALV.ViewModel
         {
             _callingWin = win;
             PluginManager.Instance.Context.DataAccess = this;
+            PluginManager.Instance.Context.DateTimeFormat = GlobalHelper.DisplayDateTimeFormat;
 
             CommandExit = new CommandRelay(commandExitExecute, p => true);
             CommandOpenFile = new CommandRelay(commandOpenFileExecute, commandOpenFileCanExecute);
@@ -40,6 +43,7 @@ namespace YALV.ViewModel
             CommandIncreaseInterval = new CommandRelay(commandIncreaseIntervalExecute, p => true);
             CommandDecreaseInterval = new CommandRelay(commandDecreaseIntervalExecute, p => true);
             CommandAbout = new CommandRelay(commandAboutExecute, p => true);
+            CommandRemoveLogFile = new CommandRelay(commandRemoveLogFileExecute, commandDeleteCanExecute);
 
             FileList = new ObservableCollection<FileItem>();
             Items = new ObservableCollection<LogItem>();
@@ -65,6 +69,12 @@ namespace YALV.ViewModel
             IsAutoRefreshEnabled = false;
 
             refreshWindowTitle();
+        }
+
+        internal void SaveSettings()
+        {
+            string[] columns =  GridManager.GetColumnOder();
+            PluginManager.Instance.Context.Configuration.Set("View.ColumnHeaders", columns);
         }
 
         protected override void OnDispose()
@@ -142,6 +152,11 @@ namespace YALV.ViewModel
         public ICommandAncestor CommandDelete { get; protected set; }
 
         /// <summary>
+        /// RemoveLogFile Command
+        /// </summary>
+        public ICommandAncestor CommandRemoveLogFile { get; protected set; }
+
+        /// <summary>
         /// OpenSelectedFolder Command
         /// </summary>
         public ICommandAncestor CommandOpenSelectedFolder { get; protected set; }
@@ -167,8 +182,8 @@ namespace YALV.ViewModel
             using (System.Windows.Forms.OpenFileDialog dlg = new System.Windows.Forms.OpenFileDialog())
             {
                 bool addFile = parameter != null && parameter.Equals("ADD");
-                dlg.Filter = String.Format("{0} (*.xml)|*.xml|{1} (*.*)|*.*", Properties.Resources.MainWindowVM_commandOpenFileExecute_XmlFilesCaption, Properties.Resources.MainWindowVM_commandOpenFileExecute_AllFilesCaption);
-                dlg.DefaultExt = "xml";
+                dlg.Filter = String.Format("Log files (*.log)|*.log|more log files (*.log*)|*.log*|{0} (*.xml)|*.xml|{1} (*.*)|*.*", Properties.Resources.MainWindowVM_commandOpenFileExecute_XmlFilesCaption, Properties.Resources.MainWindowVM_commandOpenFileExecute_AllFilesCaption);
+                dlg.DefaultExt = "log";
                 dlg.Multiselect = true;
                 dlg.Title = addFile ? Resources.MainWindowVM_commandOpenFileExecute_Add_Log_File : Resources.MainWindowVM_commandOpenFileExecute_Open_Log_File;
 
@@ -242,6 +257,36 @@ namespace YALV.ViewModel
         protected virtual bool commandClearCanExecute(object parameter)
         {
             return true;
+        }
+
+        protected virtual object commandRemoveLogFileExecute(object parameter)
+        {
+            if (IsFileSelectionEnabled)
+            {
+                //Remove all selected file
+                for (int i = FileList.Count - 1; i >= 0; i--)
+                {
+                    FileItem item = FileList[i];
+                    if (item.Checked)
+                    {
+                        Items.Clear();
+                        SelectedFile = null;
+                        FileList.RemoveAt(i);
+                    }
+                }
+            }
+            else
+            {
+                //Remove selected file
+                if (SelectedFile != null)
+                {
+                    int indexToDelete = FileList.IndexOf(SelectedFile);
+                    Items.Clear();
+                    SelectedFile = null;
+                    FileList.RemoveAt(indexToDelete);
+                }
+            }
+            return null;
         }
 
         protected virtual object commandRefreshExecute(object parameter)
@@ -454,6 +499,7 @@ namespace YALV.ViewModel
         protected virtual object commandAboutExecute(object parameter)
         {
             var win = new About() { Owner = _callingWin as Window };
+            win.DataContext = this;
             win.ShowDialog();
             return null;
         }
@@ -466,6 +512,8 @@ namespace YALV.ViewModel
         /// RefreshUI Action
         /// </summary>
         public Action<string, object> RefreshUI { get; set; }
+
+        public Action SetLastItemAsSelected { get; set; }
 
         /// <summary>
         /// WindowTitle Property
@@ -1020,12 +1068,60 @@ namespace YALV.ViewModel
         private string _goToLogItemId;
         public static string PROP_GoToLogItemId = "GoToLogItemId";
 
+        
+        public void GoToNextMarked()
+        {
+            int start = Items.IndexOf(SelectedLogItem);
+            int pos = start + 1;
+            if (start < 0)
+            {
+                start = 0;
+            }
+
+            if (pos >= Items.Count)
+            {
+                pos = 0;
+            }
+
+            while (!Items[pos].IsMarked)
+            {
+                pos++;
+                if (pos >= Items.Count)
+                {
+                    pos = 0;
+                }
+
+                if (pos == start)
+                {
+                    return;
+                }
+            }
+
+            SelectedLogItem = Items[pos];
+        }
+
+        public IReadOnlyList<PluginInfoViewModel> PluginInfos
+        {
+            get
+            {
+                if (pluginInfos == null)
+                {
+                    pluginInfos = PluginManager.Instance.GetPlugins<IYalvPlugin>().Select(x => new PluginInfoViewModel(x)).ToList();
+                }
+
+                return pluginInfos;
+            }
+        }
+
         #endregion
 
         #region Public Methods
 
         public void LoadFileList(string[] pathList, bool add = false)
         {
+            if (pathList == null)
+                return;
+
             SelectedFile = null;
 
             _loadingFileList = true;
@@ -1047,8 +1143,16 @@ namespace YALV.ViewModel
                 else
                     files = new string[] { path };
 
+                Regex fileExtRegex = PluginManager.Instance.Context.Configuration.Get<Regex>("Files.SuitingFileExtensionRegex");
+
                 foreach (string file in files)
                 {
+
+                    if (!fileExtRegex.IsMatch(file))
+                    {
+                        continue;
+                    }
+
                     string fileName = Path.GetFileName(file);
                     FileItem newItem = new FileItem(fileName, file);
                     newItem.PropertyChanged += delegate (object sender, PropertyChangedEventArgs e)
@@ -1091,6 +1195,8 @@ namespace YALV.ViewModel
         private bool _loadingFileList = false;
 
         private bool _loadingAllFiles = false;
+
+        private IReadOnlyList<PluginInfoViewModel> pluginInfos;
 
         private void refreshCheckBoxBinding()
         {
@@ -1205,6 +1311,7 @@ namespace YALV.ViewModel
         {
             CommandRefreshFiles.OnCanExecuteChanged();
             CommandDelete.OnCanExecuteChanged();
+            CommandRemoveLogFile.OnCanExecuteChanged();
             CommandOpenSelectedFolder.OnCanExecuteChanged();
             CommandSelectAllFiles.OnCanExecuteChanged();
         }
@@ -1379,6 +1486,7 @@ namespace YALV.ViewModel
                                         select it).LastOrDefault<LogItem>();
 
                         SelectedLogItem = lastItem != null ? lastItem : Items[Items.Count - 1];
+                        raiseRefreshUI(NOTIFY_ScrollIntoView);
                     }
                 }
             }
@@ -1394,31 +1502,51 @@ namespace YALV.ViewModel
         /// </summary>
         public FilteredGridManager GridManager { get; set; }
 
-        public void InitDataGrid()
+        private static readonly string[] columns = new[]
+        {
+            "IsMarked", "Id", "TimeStamp", "Level", "Message", "Thread", "Logger", "MachineName", "HostName", "UserName", "App",
+            "Class", "Method"
+        };
+
+        public void InitDataGrid(ContextMenu ctxMenu)
         {
             if (GridManager != null)
             {
-                IList<ColumnItem> dgColumns = new List<ColumnItem>()
+                string[] columnsToShow = PluginManager.Instance.Context.Configuration.Get<string[]>("View.ColumnHeaders");
+                IList<ColumnItem> dgColumns = new List<ColumnItem>();
+
+                foreach (string key in columns)
                 {
-                    new ColumnItem("IsMarked", 20, 20, CellAlignment.CENTER,string.Empty){Header = "Mark"},
-                    new ColumnItem("Id", 37, null, CellAlignment.CENTER,string.Empty){Header = Resources.MainWindowVM_InitDataGrid_IdColumn_Header},
-                    new ColumnItem("TimeStamp", 120, null, CellAlignment.CENTER, GlobalHelper.DisplayDateTimeFormat){Header = Resources.MainWindowVM_InitDataGrid_TimeStampColumn_Header},
-                    new ColumnItem("Level", null, 50, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_LevelColumn_Header},
-                    new ColumnItem("Message", null, 300){Header = Resources.MainWindowVM_InitDataGrid_MessageColumn_Header},
-                    new ColumnItem("Logger", 150, null){Header = Resources.MainWindowVM_InitDataGrid_LoggerColumn_Header},
-                    new ColumnItem("MachineName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_MachineNameColumn_Header},
-                    new ColumnItem("HostName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_HostNameColumn_Header},
-                    new ColumnItem("UserName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_UserNameColumn_Header},
-                    new ColumnItem("App", 150, null){Header = Resources.MainWindowVM_InitDataGrid_AppColumn_Header},
-                    new ColumnItem("Thread", 44, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_ThreadColumn_Header},
-                    new ColumnItem("Class", null, 300){Header = Resources.MainWindowVM_InitDataGrid_ClassColumn_Header},
-                    new ColumnItem("Method", 200, null){Header = Resources.MainWindowVM_InitDataGrid_MethodColumn_Header}
-                    //new ColumnItem("Delta", 60, null, CellAlignment.CENTER, null, "Δ"),
-                    //new ColumnItem("Path", 50)
-                };
+                    ColumnItem col = CreateColumn(key);
+                    col.IsVisible = columnsToShow.Contains(key);
+                    dgColumns.Add(col);
+                }
+
                 GridManager.BuildDataGrid(dgColumns);
+                GridManager.BuildHeaderCtxMenu(dgColumns, ctxMenu);
                 GridManager.AssignSource(new Binding(MainWindowVM.PROP_Items) { Source = this, Mode = BindingMode.OneWay });
                 GridManager.OnBeforeCheckFilter = levelCheckFilter;
+            }
+        }
+
+        private ColumnItem CreateColumn(string key)
+        {
+            switch (key)
+            {
+                case("IsMarked"): return new ColumnItem("IsMarked", 20, 20, CellAlignment.CENTER,string.Empty){Header = "Mark"};
+                case("Id"): return new ColumnItem("Id", 37, null, CellAlignment.CENTER,string.Empty){Header = Resources.MainWindowVM_InitDataGrid_IdColumn_Header};
+                case("TimeStamp"): return new ColumnItem("TimeStamp", 120, null, CellAlignment.CENTER, GlobalHelper.DisplayDateTimeFormat){Header = Resources.MainWindowVM_InitDataGrid_TimeStampColumn_Header};
+                case("Level"): return new ColumnItem("Level", null, 50, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_LevelColumn_Header};
+                case("Message"): return new ColumnItem("Message", null, 300){Header = Resources.MainWindowVM_InitDataGrid_MessageColumn_Header};
+                case("Logger"): return new ColumnItem("Logger", 150, null){Header = Resources.MainWindowVM_InitDataGrid_LoggerColumn_Header};
+                case("MachineName"): return new ColumnItem("MachineName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_MachineNameColumn_Header};
+                case("HostName"): return new ColumnItem("HostName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_HostNameColumn_Header};
+                case("UserName"): return new ColumnItem("UserName", 110, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_UserNameColumn_Header};
+                case("App"): return new ColumnItem("App", 150, null){Header = Resources.MainWindowVM_InitDataGrid_AppColumn_Header};
+                case("Thread"): return new ColumnItem("Thread", 44, null, CellAlignment.CENTER){Header = Resources.MainWindowVM_InitDataGrid_ThreadColumn_Header};
+                case("Class"): return new ColumnItem("Class", null, 300){Header = Resources.MainWindowVM_InitDataGrid_ClassColumn_Header};
+                case("Method"): return new ColumnItem("Method", 200, null){Header = Resources.MainWindowVM_InitDataGrid_MethodColumn_Header};
+                default:throw new NotSupportedException("Column '"+key+"' not recognized");
             }
         }
 
@@ -1428,7 +1556,11 @@ namespace YALV.ViewModel
             {
                 ICollectionView view = GridManager.GetCollectionView();
                 if (view != null)
+                {
                     view.Refresh();
+                    SetLastItemAsSelected();
+                }
+
                 updateFilteredCounters(view);
             }
             raiseRefreshUI(NOTIFY_ScrollIntoView);
@@ -1838,5 +1970,6 @@ namespace YALV.ViewModel
         }
 
         #endregion
+
     }
 }

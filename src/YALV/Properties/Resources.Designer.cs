@@ -424,6 +424,15 @@ namespace YALV.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove File.
+        /// </summary>
+        public static string Common_Components_MainMenu_ViewMenu_RemoveLogFile_Header {
+            get {
+                return ResourceManager.GetString("Common_Components_MainMenu_ViewMenu_RemoveLogFile_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ADD FILE.
         /// </summary>
         public static string Common_Components_MainToolbar_AddFile_Text {
@@ -528,6 +537,24 @@ namespace YALV.Properties {
         public static string Common_Components_MainToolbar_RefreshLog_Tooltip {
             get {
                 return ResourceManager.GetString("Common_Components_MainToolbar_RefreshLog_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to REMOVE FILE.
+        /// </summary>
+        public static string Common_Components_MainToolbar_RemoveSelectedFile_Text {
+            get {
+                return ResourceManager.GetString("Common_Components_MainToolbar_RemoveSelectedFile_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove selected file.
+        /// </summary>
+        public static string Common_Components_MainToolbar_RemoveSelectedFile_Tooltip {
+            get {
+                return ResourceManager.GetString("Common_Components_MainToolbar_RemoveSelectedFile_Tooltip", resourceCulture);
             }
         }
         
@@ -861,6 +888,15 @@ namespace YALV.Properties {
         public static string MainWindow_FilesListBoxContextMenu_RefreshFileList_Header {
             get {
                 return ResourceManager.GetString("MainWindow_FilesListBoxContextMenu_RefreshFileList_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove File.
+        /// </summary>
+        public static string MainWindow_FilesListBoxContextMenu_RemoveLogFile_Header {
+            get {
+                return ResourceManager.GetString("MainWindow_FilesListBoxContextMenu_RemoveLogFile_Header", resourceCulture);
             }
         }
         

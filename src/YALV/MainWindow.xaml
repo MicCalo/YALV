@@ -43,6 +43,9 @@
                 Header="{x:Static Properties:Resources.MainWindow_FilesListBoxContextMenu_DeleteFile_Header}"
                 Command="{Binding Path=CommandDelete}" />
             <MenuItem
+                Header="{x:Static Properties:Resources.MainWindow_FilesListBoxContextMenu_RemoveLogFile_Header}"
+                Command="{Binding Path=CommandRemoveLogFile}" />
+            <MenuItem
                 Header="{x:Static Properties:Resources.MainWindow_FilesListBoxContextMenu_RefreshFileList_Header}"
                 Command="{Binding Path=CommandRefreshFiles}" />
             <MenuItem
@@ -66,6 +69,9 @@
         <KeyBinding
             Command="{Binding Path=CommandDelete}"
             Key="DELETE" />
+        <KeyBinding
+            Command="{Binding Path=CommandRemoveLogFile}"
+            Gesture="Ctrl+DEL" />
     </Window.InputBindings>
 
     <Grid
@@ -961,7 +967,8 @@
                         Name="dgItems"
 						RowStyle="{StaticResource LogItemDataGridRowStyle}"
                         SelectedItem="{Binding Path=SelectedLogItem}"
-						Style="{StaticResource DefaultDataGridStyle}">
+						Style="{StaticResource DefaultDataGridStyle}"
+                        GotFocus="dgItems_GotFocus">
 
                         <DataGrid.ContextMenu>
                             <ContextMenu>
@@ -1015,15 +1022,11 @@
                             FontWeight="DemiBold"
                             Text="{x:Static Properties:Resources.MainWindow_DetailsBox_Message_Text}">
                         </TextBlock>
-                        <ScrollViewer
-                            HorizontalScrollBarVisibility="Disabled"
-                            VerticalScrollBarVisibility="Auto">
-                            <FlowDocumentScrollViewer 
-                                BorderBrush="Silver"
-                                BorderThickness="0,1"
-                                Document="{Binding Path=SelectedLogItem.DetailMessage, Mode=OneWay}">
-                            </FlowDocumentScrollViewer>
-                        </ScrollViewer>
+                        <FlowDocumentScrollViewer 
+                            BorderBrush="Silver"
+                            BorderThickness="0,1"
+                            Document="{Binding Path=SelectedLogItem.DetailMessage, Mode=OneWay}">
+                        </FlowDocumentScrollViewer>
                     </DockPanel>
 
                     <GridSplitter
@@ -1044,17 +1047,11 @@
                             FontWeight="DemiBold"
                             Text="{x:Static Properties:Resources.MainWindow_DetailsBox_Throwable_Text}">
                         </TextBlock>
-                        <ScrollViewer
-                            HorizontalScrollBarVisibility="Disabled"
-                            VerticalScrollBarVisibility="Auto">
-                            <TextBox
-                                BorderBrush="Silver"
-                                BorderThickness="0,1"
-                                IsReadOnly="True"
-                                Text="{Binding Path=SelectedLogItem.Throwable, Mode=OneWay}"
-                                TextWrapping="Wrap">
-                            </TextBox>
-                        </ScrollViewer>
+                        <FlowDocumentScrollViewer 
+                            BorderBrush="Silver"
+                            BorderThickness="0,1"
+                            Document="{Binding Path=SelectedLogItem.ThrowableMessage, Mode=OneWay}">
+                        </FlowDocumentScrollViewer>
                     </DockPanel>
                 </Grid>
             </Grid>
