@@ -15,13 +15,17 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Configuration;
 using System.Globalization;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using YALV.Common;
 using YALV.Common.Interfaces;
+using YALV.Core.Plugins;
 using YALV.ViewModel;
 
 namespace YALV
@@ -31,23 +35,29 @@ namespace YALV
     /// </summary>
     public partial class MainWindow : Window, IWinSimple
     {
+        private readonly Timer _refreshDelayTimer = new Timer(200);
+        private readonly MainWindowVM _vm;
+
+        private void HandleWindowClose(object sender, CancelEventArgs e)
+        {
+            _vm.SaveSettings();
+            PluginManager.Instance.Context.Configuration.Save();
+        }
+
         public MainWindow(string[] args)
         {
+            _refreshDelayTimer.Elapsed += HandleTimerElapsed;
             InitCulture();
 
             InitializeComponent();
 
             //Initialize and assign ViewModel
-            MainWindowVM _vm = new MainWindowVM(this);
-            _vm.GridManager = new FilteredGridManager(dgItems, txtSearchPanel, (prop, ctrl) => _vm.RefreshView());
-         //      (delegate (object sender, KeyEventArgs e)
-         //  {
-         //      if (e.OriginalSource is TextBox)
-         //          _vm.RefreshView();
-         //  });
-            _vm.InitDataGrid();
+            _vm = new MainWindowVM(this);
+            _vm.GridManager = new FilteredGridManager(dgItems, txtSearchPanel, (prop, ctrl) => Refresh());
+            _vm.InitDataGrid((ContextMenu)FindResource("HeaderContextMenu"));
             _vm.RecentFileList = mainMenu.RecentFileList;
             _vm.RefreshUI = OnRefreshUI;
+            _vm.SetLastItemAsSelected = OnSetLastItemAsSelected;
             this.DataContext = _vm;
 
             //Assign events
@@ -74,6 +84,24 @@ namespace YALV
                     _vm.LoadFileList(pathList, add);
                 }
             };
+
+            Closing += HandleWindowClose;
+        }
+
+        private void Refresh()
+        {
+            if (_refreshDelayTimer.Enabled)
+            {
+                _refreshDelayTimer.Stop();
+                _refreshDelayTimer.Interval = 200;
+            }
+            _refreshDelayTimer.Start();
+        }
+
+        private void HandleTimerElapsed(object sender, ElapsedEventArgs args)
+        {
+            _refreshDelayTimer.Stop();
+            Dispatcher.Invoke(_vm.RefreshView, DispatcherPriority.ApplicationIdle);
         }
 
         public static System.Globalization.CultureInfo ResolvedCulture
@@ -92,6 +120,18 @@ namespace YALV
         private void dgItems_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             OnRefreshUI(MainWindowVM.NOTIFY_ScrollIntoView);
+        }
+
+        private void dgItems_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is DataGridCell cell && cell.Column is DataGridCheckBoxColumn)
+            {
+                dgItems.BeginEdit();
+                if (cell.Content is CheckBox chkBox)
+                {
+                    chkBox.IsChecked = !chkBox.IsChecked;
+                }
+            }
         }
 
         private void InitCulture()
@@ -128,6 +168,24 @@ namespace YALV
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, String.Empty, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
+        private void OnSetLastItemAsSelected()
+        {
+            if(dgItems.Items.Count > 0)
+                dgItems.SelectedItem = dgItems.Items[dgItems.Items.Count - 1];
+        }
+
+
+        private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (e.Key == Key.M)
+                {
+                    _vm.GoToNextMarked();
+                }
             }
         }
     }

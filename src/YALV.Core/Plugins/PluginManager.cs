@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,20 +9,24 @@ namespace YALV.Core.Plugins
 {
     public class PluginManager
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(PluginManager));
+
         private static PluginManager _instance;
         private static readonly Type iYalvPluginType = typeof(IYalvPlugin);
-        private IPluginContext _pluginContext = new PluginContext();
+        private IPluginContext _pluginContext;
         private readonly List<IYalvPlugin> _plugins = new List<IYalvPlugin>();
 
         private PluginManager()
         {
+            DirectoryInfo _pluginDir = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"));
+
+            _pluginContext = new PluginContext(_pluginDir);
             Dictionary<Type, object> potentialParams = new Dictionary<Type, object>();
             potentialParams.Add(typeof(IPluginContext), _pluginContext);
 
             SearchAssembly(this.GetType().Assembly, potentialParams);
 
-            DirectoryInfo runningDir = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"));
-            foreach (FileInfo file in runningDir.GetFiles("*.dll"))
+            foreach (FileInfo file in _pluginDir.GetFiles("*.dll"))
             {
                 Assembly assembly = Assembly.LoadFile(file.FullName);
                 SearchAssembly(assembly, potentialParams);
@@ -38,9 +43,25 @@ namespace YALV.Core.Plugins
             {
                 foreach (Type t in module.GetTypes())
                 {
-                    if (t.IsClass && !t.IsAbstract && iYalvPluginType.IsAssignableFrom(t))
+                    try
                     {
-                        _plugins.Add(Create(t, potentialParams));
+                        if (t.IsClass && !t.IsAbstract && iYalvPluginType.IsAssignableFrom(t))
+                        {
+                            IYalvPlugin plugin = Create(t, potentialParams);
+                            if (plugin.IsEnabled)
+                            {
+                                log.Info(string.Format("Plugin {0} ({1}) added", t.Name, plugin.Information));
+                                _plugins.Add(plugin);
+                            }
+                            else
+                            {
+                                log.Info(string.Format("Plugin {0} ({1}) is not enabled", t.Name, plugin.Information));
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Warn(string.Format("Error while loading plugin of type {0} in assembly {1}", t.FullName, assembly), ex);
                     }
                 }
             }
