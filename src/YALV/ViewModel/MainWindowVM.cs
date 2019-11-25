@@ -17,6 +17,7 @@ using YALV.Core;
 using YALV.Core.Domain;
 using YALV.Core.Model;
 using YALV.Core.Plugins;
+using YALV.Core.Plugins.Commands;
 using YALV.Properties;
 
 namespace YALV.ViewModel
@@ -1314,6 +1315,16 @@ namespace YALV.ViewModel
             CommandRemoveLogFile.OnCanExecuteChanged();
             CommandOpenSelectedFolder.OnCanExecuteChanged();
             CommandSelectAllFiles.OnCanExecuteChanged();
+
+            IEnumerable<ICommandPlugin> commandPlugins = PluginManager.Instance.GetPlugins<ICommandPlugin>().Where(x => x.Location.HasFlag(CommandPluginLocation.MainToolBar));
+
+            foreach (ICommandPlugin cPlug in commandPlugins)
+            {
+                if (cPlug.Command is CommandRelay commandRelay)
+                {
+                    commandRelay.OnCanExecuteChanged();
+                }
+            }
         }
 
         private void updateJumpList()

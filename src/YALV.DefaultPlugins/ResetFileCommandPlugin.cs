@@ -8,6 +8,7 @@ using YALV.Core.Plugins;
 using YALV.Core.Plugins.Commands;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.IO;
 
@@ -15,16 +16,24 @@ namespace YALV.DefaultPlugins
 {
     public class ResetFileCommandPlugin : ICommandPlugin
     {
+        private static IYalvPluginInformation _info = new YalvPluginInformation("Reset/Clear file button", "Adds a toolbutton which clears the selected file(s)", "(c) 2019 Michel Calonder", new System.Version(1, 0, 0));
         private readonly ICommand _command;
         private readonly  IPluginContext _context;
 
-        public ResetFileCommandPlugin(IPluginContext context)
+        public bool IsEnabled
         {
-            _command = new SimpleActionCommand(Execute);
-            _context = context;
+            get { return true; }
         }
 
-        private void Execute(object parameter)
+        public IYalvPluginInformation Information { get { return _info; } }
+
+        public ResetFileCommandPlugin(IPluginContext context)
+        {
+            _command = new CommandRelay(Execute, CommandCanExecute);
+            _context = context;
+        }
+        
+        private object Execute(object parameter)
         {
             IDataAccess dataAccess = _context.DataAccess;
             if (dataAccess.IsFileSelectionEnabled)
@@ -48,6 +57,28 @@ namespace YALV.DefaultPlugins
                     ResetFile(dataAccess.SelectedFile);
                 }
             }
+
+            return null;
+        }
+
+        private bool CommandCanExecute(object parameter)
+        {
+            IDataAccess dataAccess = PluginManager.Instance.Context.DataAccess;
+            ObservableCollection<FileItem> fileList = dataAccess.FileList;
+            FileItem selectedFile = dataAccess.SelectedFile;
+            bool isFileSelectionEnabled = dataAccess.IsFileSelectionEnabled;
+
+            if (isFileSelectionEnabled)
+            {
+                if (fileList == null || fileList.Count == 0)
+                    return false;
+
+                return (from f in fileList
+                           where f.Checked
+                           select f).Count() > 0;
+            }
+            else
+                return selectedFile != null;
         }
 
         private void ResetFile(FileItem item)
@@ -62,12 +93,12 @@ namespace YALV.DefaultPlugins
 
         public int Priority
         {
-            get { return 0; }
+            get { return 100; }
         }
 
         public string ToolTip
         {
-            get { return "Clears the current File"; }
+            get { return "Clears the current file"; }
         }
 
         public ImageSource ImageSource
@@ -81,7 +112,7 @@ namespace YALV.DefaultPlugins
 
         public string Text
         {
-            get { return "Clear file"; }
+            get { return "   CLEAR FILE   "; }
         }
 
         public ICommand Command
