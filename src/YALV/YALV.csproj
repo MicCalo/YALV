@@ -118,7 +118,6 @@
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\Components\BusyIndicatorBehavior\FrameRateHelper.cs" />
-    <Compile Include="Common\CommandRelay.cs" />
     <Compile Include="Common\Components\AddRemoveToolbar.xaml.cs">
       <DependentUpon>AddRemoveToolbar.xaml</DependentUpon>
     </Compile>
@@ -138,7 +137,6 @@
     <Compile Include="Common\FilteredGridManager.cs" />
     <Compile Include="Common\FilteredGridManagerBase.cs" />
     <Compile Include="Common\GlobalHelper.cs" />
-    <Compile Include="Common\Interfaces\ICommandAncestor.cs" />
     <Compile Include="Common\Interfaces\IWinSimple.cs" />
     <Compile Include="Common\RecentFileList.cs" />
     <Compile Include="Common\ScrollSynchronizer.cs" />

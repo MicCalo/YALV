@@ -529,4 +529,16 @@ Si tratta di un'applicazione WPF basata sul .NET Framework 4.0 e scritta con il 
   <data name="MainWindow_FilesListBoxContextMenu_SelectNone_Header" xml:space="preserve">
     <value>Deseleziona Tutti I Files</value>
   </data>
+  <data name="MainWindow_FilesListBoxContextMenu_RemoveLogFile_Header" xml:space="preserve">
+    <value>Remove File</value>
+  </data>
+  <data name="Common_Components_MainMenu_ViewMenu_RemoveLogFile_Header" xml:space="preserve">
+    <value>Remove File</value>
+  </data>
+  <data name="Common_Components_MainToolbar_RemoveSelectedFile_Tooltip" xml:space="preserve">
+    <value>Remove selected file</value>
+  </data>
+  <data name="Common_Components_MainToolbar_RemoveSelectedFile_Text" xml:space="preserve">
+    <value>REMOVE FILE</value>
+  </data>
 </root>

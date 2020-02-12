@@ -78,7 +78,8 @@
     <Compile Include="Filters\Strings\IFilterToken.cs" />
     <Compile Include="Filters\Strings\StringToken.cs" />
     <Compile Include="Model\IDataAccess.cs" />
-    <Compile Include="Plugins\Commands\SimpleActionCommand.cs" />
+    <Compile Include="Plugins\Commands\CommandRelay.cs" />
+    <Compile Include="Plugins\Commands\ICommandAncestor.cs" />
     <Compile Include="Plugins\Formatting\DocumentHelper.cs" />
     <Compile Include="Plugins\Formatting\FormatFactory.cs" />
     <Compile Include="Plugins\Formatting\FormattingDetailThrowableCreator.cs" />

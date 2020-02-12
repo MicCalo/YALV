@@ -529,4 +529,16 @@ Diese Anwendung basiert auf das .NET Framework 4.0 mit WPF unter Verwendung ver 
   <data name="MainWindow_FilesListBoxContextMenu_SelectNone_Header" xml:space="preserve">
     <value>Alles Löschen</value>
   </data>
+  <data name="MainWindow_FilesListBoxContextMenu_RemoveLogFile_Header" xml:space="preserve">
+    <value>Datei entfernen</value>
+  </data>
+  <data name="Common_Components_MainMenu_ViewMenu_RemoveLogFile_Header" xml:space="preserve">
+    <value>DATEI ENTFERNEN</value>
+  </data>
+  <data name="Common_Components_MainToolbar_RemoveSelectedFile_Tooltip" xml:space="preserve">
+    <value>Ausgewählte Datei entfernen</value>
+  </data>
+  <data name="Common_Components_MainToolbar_RemoveSelectedFile_Text" xml:space="preserve">
+    <value>DATEI ENTFERNEN</value>
+  </data>
 </root>

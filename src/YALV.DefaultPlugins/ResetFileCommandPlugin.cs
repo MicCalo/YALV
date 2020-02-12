@@ -8,6 +8,7 @@ using YALV.Core.Plugins;
 using YALV.Core.Plugins.Commands;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.IO;
 
@@ -28,11 +29,11 @@ namespace YALV.DefaultPlugins
 
         public ResetFileCommandPlugin(IPluginContext context)
         {
-            _command = new SimpleActionCommand(Execute);
+            _command = new CommandRelay(Execute, CommandCanExecute);
             _context = context;
         }
-
-        private void Execute(object parameter)
+        
+        private object Execute(object parameter)
         {
             IDataAccess dataAccess = _context.DataAccess;
             if (dataAccess.IsFileSelectionEnabled)
@@ -56,6 +57,28 @@ namespace YALV.DefaultPlugins
                     ResetFile(dataAccess.SelectedFile);
                 }
             }
+
+            return null;
+        }
+
+        private bool CommandCanExecute(object parameter)
+        {
+            IDataAccess dataAccess = PluginManager.Instance.Context.DataAccess;
+            ObservableCollection<FileItem> fileList = dataAccess.FileList;
+            FileItem selectedFile = dataAccess.SelectedFile;
+            bool isFileSelectionEnabled = dataAccess.IsFileSelectionEnabled;
+
+            if (isFileSelectionEnabled)
+            {
+                if (fileList == null || fileList.Count == 0)
+                    return false;
+
+                return (from f in fileList
+                           where f.Checked
+                           select f).Count() > 0;
+            }
+            else
+                return selectedFile != null;
         }
 
         private void ResetFile(FileItem item)

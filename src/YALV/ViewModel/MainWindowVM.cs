@@ -17,6 +17,7 @@ using YALV.Core;
 using YALV.Core.Domain;
 using YALV.Core.Model;
 using YALV.Core.Plugins;
+using YALV.Core.Plugins.Commands;
 using YALV.Properties;
 
 namespace YALV.ViewModel
@@ -43,6 +44,7 @@ namespace YALV.ViewModel
             CommandIncreaseInterval = new CommandRelay(commandIncreaseIntervalExecute, p => true);
             CommandDecreaseInterval = new CommandRelay(commandDecreaseIntervalExecute, p => true);
             CommandAbout = new CommandRelay(commandAboutExecute, p => true);
+            CommandRemoveLogFile = new CommandRelay(commandRemoveLogFileExecute, commandDeleteCanExecute);
 
             FileList = new ObservableCollection<FileItem>();
             Items = new ObservableCollection<LogItem>();
@@ -151,6 +153,11 @@ namespace YALV.ViewModel
         public ICommandAncestor CommandDelete { get; protected set; }
 
         /// <summary>
+        /// RemoveLogFile Command
+        /// </summary>
+        public ICommandAncestor CommandRemoveLogFile { get; protected set; }
+
+        /// <summary>
         /// OpenSelectedFolder Command
         /// </summary>
         public ICommandAncestor CommandOpenSelectedFolder { get; protected set; }
@@ -251,6 +258,36 @@ namespace YALV.ViewModel
         protected virtual bool commandClearCanExecute(object parameter)
         {
             return true;
+        }
+
+        protected virtual object commandRemoveLogFileExecute(object parameter)
+        {
+            if (IsFileSelectionEnabled)
+            {
+                //Remove all selected file
+                for (int i = FileList.Count - 1; i >= 0; i--)
+                {
+                    FileItem item = FileList[i];
+                    if (item.Checked)
+                    {
+                        Items.Clear();
+                        SelectedFile = null;
+                        FileList.RemoveAt(i);
+                    }
+                }
+            }
+            else
+            {
+                //Remove selected file
+                if (SelectedFile != null)
+                {
+                    int indexToDelete = FileList.IndexOf(SelectedFile);
+                    Items.Clear();
+                    SelectedFile = null;
+                    FileList.RemoveAt(indexToDelete);
+                }
+            }
+            return null;
         }
 
         protected virtual object commandRefreshExecute(object parameter)
@@ -1083,6 +1120,9 @@ namespace YALV.ViewModel
 
         public void LoadFileList(string[] pathList, bool add = false)
         {
+            if (pathList == null)
+                return;
+
             SelectedFile = null;
 
             _loadingFileList = true;
@@ -1272,8 +1312,19 @@ namespace YALV.ViewModel
         {
             CommandRefreshFiles.OnCanExecuteChanged();
             CommandDelete.OnCanExecuteChanged();
+            CommandRemoveLogFile.OnCanExecuteChanged();
             CommandOpenSelectedFolder.OnCanExecuteChanged();
             CommandSelectAllFiles.OnCanExecuteChanged();
+
+            IEnumerable<ICommandPlugin> commandPlugins = PluginManager.Instance.GetPlugins<ICommandPlugin>().Where(x => x.Location.HasFlag(CommandPluginLocation.MainToolBar));
+
+            foreach (ICommandPlugin cPlug in commandPlugins)
+            {
+                if (cPlug.Command is CommandRelay commandRelay)
+                {
+                    commandRelay.OnCanExecuteChanged();
+                }
+            }
         }
 
         private void updateJumpList()

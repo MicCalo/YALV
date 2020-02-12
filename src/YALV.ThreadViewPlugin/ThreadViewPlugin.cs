@@ -1,16 +1,12 @@
 ﻿using log4net;
 using System;
-using System.Text.RegularExpressions;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using YALV.Core.Domain;
 using YALV.Core.Plugins;
 using YALV.Core.Plugins.Commands;
 using YALV.ThreadPlugin.Views;
 using YALV.ThreadViewPlugin.ViewModels;
-using YALV.ThreadViewPlugin.Views;
 
 namespace YALV.GraphVizPlugin
 {
@@ -24,18 +20,18 @@ namespace YALV.GraphVizPlugin
 
         public bool IsEnabled
         {
-            get { return true; }
+            get { return false; }
         }
 
         public IYalvPluginInformation Information { get { return _info; } }
 
         public ThreadViewPlugin(IPluginContext context)
         {
-            _command = new SimpleActionCommand(Execute);
+            _command = new CommandRelay(Execute, CommandCanExecute);
             _context = context;
         }
 
-        private void Execute(object parameter)
+        private object Execute(object parameter)
         {
             MainViewModel vm = new MainViewModel(_context.DataAccess.Items);
 
@@ -50,6 +46,13 @@ namespace YALV.GraphVizPlugin
             win.Content = panel;
             win.Show();
             */
+
+            return null;
+        }
+
+        private bool CommandCanExecute(object parameter)
+        {
+            return true;
         }
 
         public CommandPluginLocation Location

@@ -25,18 +25,18 @@ namespace YALV.GraphVizPlugin
 
         public bool IsEnabled
         {
-            get { return true; }
+            get { return false; }
         }
 
         public IYalvPluginInformation Information { get { return _info; } }
 
         public GraphVizPlugin(IPluginContext context)
         {
-            _command = new SimpleActionCommand(Execute);
+            _command = new CommandRelay(Execute, CommandCanExecute);
             _context = context;
         }
 
-        private void Execute(object parameter)
+        private object Execute(object parameter)
         {
             GraphBuilder builder = new GraphBuilder();
             foreach (LogItem item in _context.DataAccess.Items)
@@ -57,6 +57,13 @@ namespace YALV.GraphVizPlugin
             host.Child = viewer;
             win.Content = host;
             win.Show();
+
+            return null;
+        }
+
+        private bool CommandCanExecute(object parameter)
+        {
+            return true;
         }
 
         public CommandPluginLocation Location

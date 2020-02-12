@@ -58,6 +58,10 @@
       <Project>{d8efa045-5482-4bba-a1bf-28667d5f4635}</Project>
       <Name>YALV.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\YALV\YALV.csproj">
+      <Project>{D9109556-5B27-4FF2-AB53-837DF91A5466}</Project>
+      <Name>YALV</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\bin.png" />

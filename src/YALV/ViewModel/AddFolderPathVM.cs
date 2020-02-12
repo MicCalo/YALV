@@ -8,6 +8,7 @@ using YALV.Common;
 using YALV.Common.Interfaces;
 using YALV.Core;
 using YALV.Core.Domain;
+using YALV.Core.Plugins.Commands;
 using YALV.Properties;
 
 namespace YALV.ViewModel

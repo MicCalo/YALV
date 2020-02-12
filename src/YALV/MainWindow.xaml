@@ -43,6 +43,9 @@
                 Header="{x:Static Properties:Resources.MainWindow_FilesListBoxContextMenu_DeleteFile_Header}"
                 Command="{Binding Path=CommandDelete}" />
             <MenuItem
+                Header="{x:Static Properties:Resources.MainWindow_FilesListBoxContextMenu_RemoveLogFile_Header}"
+                Command="{Binding Path=CommandRemoveLogFile}" />
+            <MenuItem
                 Header="{x:Static Properties:Resources.MainWindow_FilesListBoxContextMenu_RefreshFileList_Header}"
                 Command="{Binding Path=CommandRefreshFiles}" />
             <MenuItem
@@ -66,6 +69,9 @@
         <KeyBinding
             Command="{Binding Path=CommandDelete}"
             Key="DELETE" />
+        <KeyBinding
+            Command="{Binding Path=CommandRemoveLogFile}"
+            Gesture="Ctrl+DEL" />
     </Window.InputBindings>
 
     <Grid

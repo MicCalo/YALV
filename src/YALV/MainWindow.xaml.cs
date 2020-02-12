@@ -25,6 +25,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using YALV.Common;
 using YALV.Common.Interfaces;
+using YALV.Core.Domain;
 using YALV.Core.Plugins;
 using YALV.ViewModel;
 
@@ -129,7 +130,11 @@ namespace YALV
                 dgItems.BeginEdit();
                 if (cell.Content is CheckBox chkBox)
                 {
-                    chkBox.IsChecked = !chkBox.IsChecked;
+                    bool checkItem = (bool)!chkBox.IsChecked;
+                    LogItem logItem = (LogItem)cell.DataContext;
+
+                    logItem.IsMarked = checkItem;
+                    chkBox.IsChecked = checkItem;
                 }
             }
         }

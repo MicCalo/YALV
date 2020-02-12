@@ -126,4 +126,17 @@
                 Text="{x:Static Properties:Resources.Common_Components_MainToolbar_DeleteSelectedFile_Text}" />
         </StackPanel>
     </Button>
+
+    <Button
+        Style="{StaticResource ToolbarButtonStyle}"
+        Margin="0,0,0,1"
+        ToolTip="{x:Static Properties:Resources.Common_Components_MainToolbar_RemoveSelectedFile_Tooltip}"
+        Command="{Binding Path=CommandRemoveLogFile}">
+        <StackPanel>
+            <Image
+                Source="/Resources/Icons/remove.png" />
+            <TextBlock
+                Text="{x:Static Properties:Resources.Common_Components_MainToolbar_RemoveSelectedFile_Text}" />
+        </StackPanel>
+    </Button>
 </ToolBar>

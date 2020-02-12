@@ -225,6 +225,9 @@
   <data name="Common_Components_MainMenu_ViewMenu_DeleteFile_Header" xml:space="preserve">
     <value>Delete File</value>
   </data>
+  <data name="Common_Components_MainMenu_ViewMenu_RemoveLogFile_Header" xml:space="preserve">
+    <value>Remove File</value>
+  </data>
   <data name="Common_Components_MainMenu_AboutMenu_Header" xml:space="preserve">
     <value>About</value>
   </data>
@@ -267,8 +270,14 @@
   <data name="Common_Components_MainToolbar_DeleteSelectedFile_Tooltip" xml:space="preserve">
     <value>Delete selected file</value>
   </data>
+  <data name="Common_Components_MainToolbar_RemoveSelectedFile_Tooltip" xml:space="preserve">
+    <value>Remove selected file</value>
+  </data>
   <data name="Common_Components_MainToolbar_DeleteSelectedFile_Text" xml:space="preserve">
     <value>DELETE FILE</value>
+  </data>
+  <data name="Common_Components_MainToolbar_RemoveSelectedFile_Text" xml:space="preserve">
+    <value>REMOVE FILE</value>
   </data>
   <data name="Common_Components_AddRemoveToolbar_SaveList_Tooltip" xml:space="preserve">
     <value>Save Favorites</value>
@@ -365,6 +374,9 @@
   </data>
   <data name="MainWindow_FilesListBoxContextMenu_DeleteFile_Header" xml:space="preserve">
     <value>Delete File</value>
+  </data>
+  <data name="MainWindow_FilesListBoxContextMenu_RemoveLogFile_Header" xml:space="preserve">
+    <value>Remove File</value>
   </data>
   <data name="MainWindow_FilesListBoxContextMenu_RefreshFileList_Header" xml:space="preserve">
     <value>Refresh File List</value>
