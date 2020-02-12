@@ -5,11 +5,14 @@ using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml;
+using log4net;
 
 namespace YALV.Core.Settings
 {
     internal class ConfigIo
     {
+        private static readonly ILog log = LogManager.GetLogger(typeof(ConfigIo));
+
         private FileInfo GetFile()
         {
             string path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -98,17 +101,25 @@ namespace YALV.Core.Settings
 
         public void Save(Dictionary<string, object> settings)
         {
-            using (XmlWriter w = XmlWriter.Create(new StreamWriter(GetFile().OpenWrite()), new XmlWriterSettings() { Indent = true }))
+            try
             {
-                w.WriteStartElement("settings");
-                foreach (KeyValuePair<string, object> kv in settings)
+                using (XmlWriter w = XmlWriter.Create(new StreamWriter(GetFile().OpenWrite()),
+                    new XmlWriterSettings() {Indent = true}))
                 {
-                    w.WriteStartElement("item");
-                    w.WriteAttributeString("key", kv.Key);
-                    w.WriteAttributeString("type", kv.Value.GetType().Name);
-                    Write(w, kv.Value);
-                    w.WriteEndElement();
+                    w.WriteStartElement("settings");
+                    foreach (KeyValuePair<string, object> kv in settings)
+                    {
+                        w.WriteStartElement("item");
+                        w.WriteAttributeString("key", kv.Key);
+                        w.WriteAttributeString("type", kv.Value.GetType().Name);
+                        Write(w, kv.Value);
+                        w.WriteEndElement();
+                    }
                 }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                log.InfoFormat("Can not write file '{0}' because of missing permission", GetFile().FullName);
             }
         }
 
